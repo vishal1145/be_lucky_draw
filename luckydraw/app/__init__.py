@@ -3,6 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import Config
 from app.services.email_service import mail
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize extensions
 db = SQLAlchemy()
@@ -21,14 +26,10 @@ def create_app():
     
     # Create database tables
     with app.app_context():
-        # Import models here to ensure they're registered with SQLAlchemy
-        from app.models.registration import Registration
-        
-        # Create all tables
         db.create_all()
     
     # Import and register blueprints
     from app.routes import main_bp
     app.register_blueprint(main_bp)
     
-    return app 
+    return app

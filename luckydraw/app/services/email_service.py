@@ -64,3 +64,31 @@ class EmailService:
         except Exception as e:
             print(f"Error sending winner email: {str(e)}")
             return False 
+
+    @staticmethod
+    def send_welcome_email(email, name):
+        try:
+            html_content = '''
+            <html>
+                <body>
+                    <h2>Welcome {{ name }}!</h2>
+                    <p>Thank you for registering with us.</p>
+                    <p>Your registration has been completed successfully.</p>
+                </body>
+            </html>
+            '''
+            
+            html = render_template_string(html_content, name=name)
+            
+            msg = Message(
+                'Welcome to Our Platform',
+                recipients=[email],
+                html=html
+            )
+            
+            mail.send(msg)
+            return True
+            
+        except Exception as e:
+            print(f"Error sending welcome email: {str(e)}")
+            return False 

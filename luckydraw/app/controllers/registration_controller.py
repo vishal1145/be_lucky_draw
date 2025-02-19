@@ -211,7 +211,7 @@ class RegistrationController:
                 
                 # Send SMS notification
                 SMSService.send_winner_sms(
-                    phone_number=winner.mobile_number,
+                    phone_number=f"{winner.country_code}{winner.mobile_number}",
                     name=winner.name
                 )
                 
@@ -241,4 +241,103 @@ class RegistrationController:
             return jsonify({
                 'error': 'Failed to fetch users',
                 'message': str(e)
-            }), 500 
+            }), 500
+
+    @staticmethod
+    def initiate_verification(data):
+        try:
+            # Check if email already exists
+            existing_registration = Registration.query.filter_by(email=data.get('email')).first()
+            if existing_registration:
+                return jsonify({
+                    'error': 'Email already registered'
+                }), 400
+
+            # Create OTP record with all user data
+            otp_record = OTP(data)
+            db.session.add(otp_record)
+            db.session.commit()
+            
+            # Send email OTP
+            email_sent = EmailService.send_otp_email(
+                email=data.get('email'),
+                otp=otp_record.email_otp
+            )
+            
+            # Send SMS OTP
+            sms_sent = SMSService.send_otp_sms(
+                phone_number=f"{data.get('country_code')}{data.get('phone')}",
+                otp=otp_record.phone_otp
+            )
+            
+            if not email_sent or not sms_sent:
+                db.session.delete(otp_record)
+                db.session.commit()
+                return jsonify({
+                    'error': 'Failed to send OTPs'
+                }), 500
+
+            return jsonify({
+                'message': 'OTPs sent successfully',
+                'temp_id': otp_record.id
+            }), 200
+            
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                'error': 'Failed to initiate verification',
+                'message': str(e)
+            }), 400
+
+    @staticmethod
+    def verify_and_register(data):
+        try:
+            temp_id = data.get('temp_id')
+            email_otp = data.get('email_otp')
+            phone_otp = data.get('phone_otp')
+
+            otp_record = OTP.query.get(temp_id)
+            
+            if not otp_record:
+                return jsonify({'error': 'Invalid temporary ID'}), 400
+                
+            if datetime.utcnow() > otp_record.expires_at:
+                return jsonify({'error': 'OTPs expired'}), 400
+
+            if email_otp != otp_record.email_otp:
+                return jsonify({'error': 'Invalid email OTP'}), 400
+
+            if phone_otp != otp_record.phone_otp:
+                return jsonify({'error': 'Invalid phone OTP'}), 400
+
+            # Create registration
+            new_registration = Registration(
+                name=otp_record.name,
+                email=otp_record.email,
+                country_code=otp_record.country_code,
+                mobile_number=otp_record.phone,
+                technologies=otp_record.technologies,
+                requirements=otp_record.requirements
+            )
+            
+            db.session.add(new_registration)
+            db.session.delete(otp_record)
+            db.session.commit()
+
+            # Send welcome email
+            EmailService.send_welcome_email(
+                email=new_registration.email,
+                name=new_registration.name
+            )
+
+            return jsonify({
+                'message': 'Registration successful!',
+                'user_id': new_registration.id
+            }), 201
+
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({
+                'error': 'Verification failed',
+                'message': str(e)
+            }), 400 
