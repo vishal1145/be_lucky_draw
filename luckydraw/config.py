@@ -5,7 +5,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Database URI will be different for local and server
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Trading123@localhost:3306/lucky?unix_socket=/opt/lampp/var/mysql/mysql.sock'
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Algofolks123@localhost:3306/lottery?unix_socket=/opt/lampp/var/mysql/mysql.sock'
 
     # if os.environ.get('FLASK_ENV') == 'production':
     # else:
