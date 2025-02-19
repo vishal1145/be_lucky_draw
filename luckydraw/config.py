@@ -3,14 +3,21 @@ import os
 class Config:
     # MySQL Database Configuration
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = (
-        os.environ.get('DATABASE_URL') or
-        'mysql+pymysql://root:Trading123@localhost:3306/lucky_draw_db?unix_socket=/opt/lampp/var/mysql/mysql.sock'
-    )
+    
+    # Database URI will be different for local and server
+    if os.environ.get('FLASK_ENV') == 'production':
+        # Server database configuration
+        SQLALCHEMY_DATABASE_URI = (
+            os.environ.get('DATABASE_URL') or
+            'mysql+pymysql://root:Trading123@localhost:3306/lucky_draw_db?unix_socket=/opt/lampp/var/mysql/mysql.sock'
+        )
+    else:
+        # Local database configuration
+        SQLALCHEMY_DATABASE_URI = f"mysql://root:Algo1234!@localhost/lucky_draw"
     
     # Flask Configuration
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
-    DEBUG = True
+    DEBUG = os.environ.get('FLASK_ENV') != 'production'
 
     # Email Configuration (using Gmail)
     MAIL_SERVER = 'smtp.gmail.com'

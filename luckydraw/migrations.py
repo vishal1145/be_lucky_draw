@@ -1,7 +1,8 @@
 from flask.cli import FlaskGroup
-from app import create_app, db
+from wsgi import app
+from app import db
 
-cli = FlaskGroup(create_app=create_app)
+cli = FlaskGroup(app=app)
 
 if __name__ == '__main__':
     cli() 

@@ -29,7 +29,11 @@ def create_app():
     
     # Create database tables
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception as e:
+            print(f"Database Error: {e}")
+            print("Please ensure MySQL is running and the database exists")
     
     # Import and register blueprints
     from app.routes import main_bp
