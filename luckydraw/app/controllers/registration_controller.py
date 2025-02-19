@@ -56,7 +56,16 @@ class RegistrationController:
                     
                     image_path = os.path.join(upload_folder, unique_filename)
                     image.save(image_path)
-                    image_url = f"/uploads/{unique_filename}"
+                    
+                    # Generate full URL with domain
+                    domain = current_app.config.get('DOMAIN_NAME')
+                    if not domain:
+                        return jsonify({
+                            'error': 'Server configuration error: DOMAIN_NAME not set'
+                        }), 500
+                    
+                    image_url = f"{domain}/uploads/{unique_filename}"
+
                 except Exception as e:
                     return jsonify({
                         'error': 'Failed to save image',
