@@ -6,7 +6,7 @@ class Config:
     
     # Database URI will be different for local and server
     if os.environ.get('FLASK_ENV') == 'production':
-        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Trading123@localhost:3306/lucky_draw_db?unix_socket=/opt/lampp/var/mysql/mysql.sock'
+        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Trading123@localhost:3306/lucky?unix_socket=/opt/lampp/var/mysql/mysql.sock'
     else:
         SQLALCHEMY_DATABASE_URI = 'mysql://root:Algo1234!@localhost/lucky_draw'
     
