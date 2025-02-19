@@ -5,10 +5,11 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Database URI will be different for local and server
-    if os.environ.get('FLASK_ENV') == 'production':
-        SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Trading123@localhost:3306/lucky?unix_socket=/opt/lampp/var/mysql/mysql.sock'
-    else:
-        SQLALCHEMY_DATABASE_URI = 'mysql://root:Algo1234!@localhost/lucky_draw'
+    SQLALCHEMY_DATABASE_URI = 'mysql:root:Trading123@localhost:3306/lucky?unix_socket=/opt/lampp/var/mysql/mysql.sock'
+
+    # if os.environ.get('FLASK_ENV') == 'production':
+    # else:
+    #     SQLALCHEMY_DATABASE_URI = 'mysql://root:Algo1234!@localhost/lucky_draw'
     
     SECRET_KEY = 'your-secret-key-here'
     DEBUG = os.environ.get('FLASK_ENV') != 'production'
