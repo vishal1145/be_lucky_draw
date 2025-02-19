@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from luckydraw.config import Config
+from config import Config
 from app.services.email_service import mail
 from dotenv import load_dotenv
 import os
