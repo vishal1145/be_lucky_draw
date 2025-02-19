@@ -16,11 +16,14 @@ migrate = Migrate()
 
 pymysql.install_as_MySQLdb()
 
-def create_app():
+def create_app(config_class=Config):
     app = Flask(__name__)
     
     # Load configuration
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
+    
+    # Ensure upload folder exists
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     
     # Initialize extensions with app
     db.init_app(app)
@@ -33,6 +36,7 @@ def create_app():
     # Create database tables
     with app.app_context():
         try:
+            db.drop_all()
             db.create_all()
         except Exception as e:
             print(f"Database Error: {e}")

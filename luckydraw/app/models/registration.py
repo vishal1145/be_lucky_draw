@@ -13,17 +13,26 @@ class Registration(db.Model):
     technologies = db.Column(db.String(200), nullable=False)
     requirements = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    image_url = db.Column(db.String(255))
+    is_verified = db.Column(db.Boolean, default=True)
+    is_active = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return f'<Registration {self.name}>'
 
     def to_dict(self):
         return {
-            "id": self.id,
-            "name": self.name,
-            "email": self.email,
-            "country_code": self.country_code,
-            "phone": self.mobile_number
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'country_code': self.country_code,
+            'phone': self.mobile_number,
+            'technologies': self.technologies,
+            'requirements': self.requirements,
+            'image_url': self.image_url,
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None,
+            'is_verified': self.is_verified,
+            'is_active': self.is_active
         }
 
     @classmethod
