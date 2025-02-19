@@ -24,6 +24,9 @@ def create_app():
     migrate.init_app(app, db)
     mail.init_app(app)
     
+    # Import models to ensure they're registered with SQLAlchemy
+    from app.models import registration, otp
+    
     # Create database tables
     with app.app_context():
         db.create_all()
