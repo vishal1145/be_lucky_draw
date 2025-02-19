@@ -154,7 +154,7 @@ class EmailService:
             html = render_template('emails/welcome_email.html', name=name)
             
             msg = Message(
-                'Welcome to Lucky Draw! 🎉',
+                '🎉 Welcome to the Lucky Draw – Your Chance to Win Big!',
                 recipients=[email],
                 html=html
             )

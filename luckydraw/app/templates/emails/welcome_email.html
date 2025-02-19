@@ -36,6 +36,7 @@
                 text-align: center;
                 margin: 20px 0;
                 color: #555;
+                line-height: 1.8;
             }
             .footer {
                 text-align: center;
@@ -43,33 +44,34 @@
                 color: #666;
                 font-size: 14px;
             }
-            .cta-button {
-                display: block;
-                width: fit-content;
-                margin: 25px auto;
-                padding: 12px 30px;
-                background-color: #6c63ff;
-                color: white !important;
-                text-decoration: none;
-                border-radius: 5px;
-                font-weight: bold;
-                text-align: center;
+            .highlight-box {
+                background-color: #f5f7ff;
+                border-left: 4px solid #6c63ff;
+                padding: 20px;
+                margin: 25px 0;
+                border-radius: 0 8px 8px 0;
             }
-            .features {
-                display: flex;
-                justify-content: space-around;
-                margin: 30px 0;
-                flex-wrap: wrap;
-            }
-            .feature {
-                text-align: center;
-                flex-basis: 30%;
-                margin: 10px;
-            }
-            .feature-icon {
-                font-size: 24px;
+            .highlight-title {
                 color: #6c63ff;
-                margin-bottom: 10px;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 15px;
+            }
+            .emoji {
+                font-size: 20px;
+                margin-right: 5px;
+            }
+            .list-item {
+                margin: 10px 0;
+                display: flex;
+                align-items: center;
+            }
+            .good-luck {
+                font-size: 20px;
+                color: #6c63ff;
+                text-align: center;
+                margin: 30px 0;
+                font-weight: bold;
             }
         </style>
     </head>
@@ -77,43 +79,39 @@
         <div class="email-container">
             <div class="content">
                 <div class="header">
-                    <div class="welcome-text">Welcome {{ name }}! 🎉</div>
-                    <h2>Your Journey Begins Here</h2>
+                    <div class="welcome-text">Welcome to the Lucky Draw! 🎉</div>
+                    <h2>Your Chance to Win Big!</h2>
                 </div>
                 
                 <div class="message">
-                    Thank you for joining our platform! We're thrilled to have you as part of our community.
+                    Dear {{ name }},
+                    <br><br>
+                    Thank you for participating in our exclusive lucky draw! 🎊 
+                    You're now in the running to be one of the three lucky winners 
+                    who will receive amazing discounts on our services.
                 </div>
                 
-                <div class="features">
-                    <div class="feature">
-                        <div class="feature-icon">🎯</div>
-                        <h3>Get Started</h3>
-                        <p>Complete your profile to start participating</p>
+                <div class="highlight-box">
+                    <div class="highlight-title">
+                        <span class="emoji">🌟</span> What Happens Next?
                     </div>
-                    <div class="feature">
-                        <div class="feature-icon">🎲</div>
-                        <h3>Join Draws</h3>
-                        <p>Enter exciting lucky draws</p>
+                    <div class="list-item">
+                        <span class="emoji">📧</span> We will announce the winners soon, so keep an eye on your inbox!
                     </div>
-                    <div class="feature">
-                        <div class="feature-icon">🏆</div>
-                        <h3>Win Prizes</h3>
-                        <p>Get chances to win amazing rewards</p>
+                    <div class="list-item">
+                        <span class="emoji">🎁</span> If you're one of the lucky three, you'll receive an exclusive discount offer.
+                    </div>
+                    <div class="list-item">
+                        <span class="emoji">💫</span> We truly appreciate your participation and wish you the best of luck!
                     </div>
                 </div>
 
-                <a href="#" class="cta-button">
-                    Start Exploring
-                </a>
-                
-                <div class="message">
-                    We're here to help you make the most of your experience.
-                    If you have any questions, feel free to reach out to our support team.
+                <div class="good-luck">
+                    Stay tuned, and fingers crossed! 🤞
                 </div>
                 
                 <div class="footer">
-                    <p>Best regards,<br>Team Lucky Draw</p>
+                    <p>Best regards,<br>Team Algofolks</p>
                 </div>
             </div>
         </div>
