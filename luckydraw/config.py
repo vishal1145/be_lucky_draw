@@ -10,7 +10,6 @@ class Config:
     else:
         SQLALCHEMY_DATABASE_URI = 'mysql://root:Algo1234!@localhost/lucky_draw'
     
-    # Flask Configuration
     SECRET_KEY = 'your-secret-key-here'
     DEBUG = os.environ.get('FLASK_ENV') != 'production'
 
