@@ -9,7 +9,7 @@ class Registration(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     country_code = db.Column(db.String(10), nullable=False)
-    mobile_number = db.Column(db.String(20), nullable=False)
+    mobile_number = db.Column(db.String(20),unique=True, nullable=False)
     technologies = db.Column(db.String(200), nullable=False)
     requirements = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
