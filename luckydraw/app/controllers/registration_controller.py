@@ -58,7 +58,7 @@ class RegistrationController:
                     image.save(image_path)
                     
                     # Generate full URL with domain
-                    domain = current_app.config.get('DOMAIN_NAME')
+                    domain = current_app.config.get('DOMAIN_NAME', '').rstrip('/')
                     if not domain:
                         return jsonify({
                             'error': 'Server configuration error: DOMAIN_NAME not set'
