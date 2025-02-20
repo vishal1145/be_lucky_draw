@@ -36,6 +36,10 @@ class Config:
     # CORS Configuration
     CORS_ORIGINS = os.getenv('CORS_ORIGINS', '').split(',')
 
+    # Static file configuration
+    STATIC_FOLDER = 'static'
+    STATIC_URL_PATH = '/static'
+
     def __init__(self):
         # Validate required environment variables
         required_vars = [

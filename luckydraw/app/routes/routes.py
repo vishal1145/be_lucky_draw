@@ -1,5 +1,5 @@
 from app.routes import main_bp
-from flask import jsonify, request, send_from_directory
+from flask import jsonify, request, send_from_directory, render_template
 from app.controllers.registration_controller import RegistrationController
 import os
 from flask import current_app
@@ -35,3 +35,7 @@ def select_winners():
 @main_bp.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename) 
+
+@main_bp.route('/api/welcome-email', methods=['GET'])
+def get_welcome_email():
+    return render_template('emails/welcome_email.html')
