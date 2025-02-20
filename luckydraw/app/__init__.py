@@ -46,7 +46,6 @@ def create_app(config_class=Config):
     # Create database tables
     with app.app_context():
         try:
-            db.drop_all()
             db.create_all()
         except Exception as e:
             print(f"Database Error: {e}")
