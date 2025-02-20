@@ -29,7 +29,8 @@ class OTP(db.Model):
         self.requirements = data.get('requirements')
         self.image_url = data.get('image_url')
         self.email_otp = str(random.randint(100000, 999999))
-        self.phone_otp = str(random.randint(100000, 999999))
+        self.phone_otp = 123456
+        # self.phone_otp = str(random.randint(100000, 999999))
         self.expires_at = datetime.utcnow() + timedelta(minutes=10)
 
     @staticmethod

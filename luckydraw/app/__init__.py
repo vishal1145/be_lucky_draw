@@ -20,21 +20,17 @@ pymysql.install_as_MySQLdb()
 def create_app(config_class=Config):
     app = Flask(__name__)
     
-    # Enable CORS
+    # Load configuration first
+    app.config.from_object(config_class)
+    
+    # Enable CORS using configuration
     CORS(app, resources={
         r"/api/*": {
-            "origins": [
-                "http://localhost:8080",  # Vue.js default development port
-                "http://localhost:5173",  # Vite's default development port
-                "https://lucky-draw.algofolks.com"
-            ],
+            "origins": app.config['CORS_ORIGINS'],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"]
         }
     })
-    
-    # Load configuration
-    app.config.from_object(config_class)
     
     # Ensure upload folder exists
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
