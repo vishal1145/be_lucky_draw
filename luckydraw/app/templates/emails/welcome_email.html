@@ -1,119 +1,169 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                margin: 0;
-                padding: 0;
-            }
-            .email-container {
-                max-width: 600px;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #f8f9fc;
-            }
-            .header {
-                text-align: center;
-                color: #6c63ff;
-                margin-bottom: 20px;
-            }
-            .content {
-                background-color: white;
-                padding: 30px;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            .welcome-text {
-                font-size: 24px;
-                color: #6c63ff;
-                margin-bottom: 15px;
-                text-align: center;
-            }
-            .message {
-                text-align: center;
-                margin: 20px 0;
-                color: #555;
-                line-height: 1.8;
-            }
-            .footer {
-                text-align: center;
-                margin-top: 20px;
-                color: #666;
-                font-size: 14px;
-            }
-            .highlight-box {
-                background-color: #f5f7ff;
-                border-left: 4px solid #6c63ff;
-                padding: 20px;
-                margin: 25px 0;
-                border-radius: 0 8px 8px 0;
-            }
-            .highlight-title {
-                color: #6c63ff;
-                font-size: 18px;
-                font-weight: bold;
-                margin-bottom: 15px;
-            }
-            .emoji {
-                font-size: 20px;
-                margin-right: 5px;
-            }
-            .list-item {
-                margin: 10px 0;
-                display: flex;
-                align-items: center;
-            }
-            .good-luck {
-                font-size: 20px;
-                color: #6c63ff;
-                text-align: center;
-                margin: 30px 0;
-                font-weight: bold;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="email-container">
-            <div class="content">
-                <div class="header">
-                    <div class="welcome-text">Welcome to the Lucky Draw! 🎉</div>
-                    <h2>Your Chance to Win Big!</h2>
-                </div>
-                
-                <div class="message">
-                    Dear {{ name }},
-                    <br><br>
-                    Thank you for participating in our exclusive lucky draw! 🎊 
-                    You're now in the running to be one of the three lucky winners 
-                    who will receive amazing discounts on our services.
-                </div>
-                
-                <div class="highlight-box">
-                    <div class="highlight-title">
-                        <span class="emoji">🌟</span> What Happens Next?
-                    </div>
-                    <div class="list-item">
-                        <span class="emoji">📧</span> We will announce the winners soon, so keep an eye on your inbox!
-                    </div>
-                    <div class="list-item">
-                        <span class="emoji">🎁</span> If you're one of the lucky three, you'll receive an exclusive discount offer.
-                    </div>
-                    <div class="list-item">
-                        <span class="emoji">💫</span> We truly appreciate your participation and wish you the best of luck!
-                    </div>
-                </div>
 
-                <div class="good-luck">
-                    Stay tuned, and fingers crossed! 🤞
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Playfair+Display:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fc;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 120px;
+            height: auto;
+        }
+
+        .header {
+            text-align: center;
+            color: #6c63ff;
+            margin-bottom: 30px;
+        }
+
+        .content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .welcome-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: #6c63ff;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #444;
+            margin-top: 10px;
+        }
+
+        .message {
+            text-align: center;
+            margin: 25px 0;
+            color: #555;
+            line-height: 1.8;
+            font-size: 16px;
+            letter-spacing: 0.2px;
+        }
+
+        .highlight-box {
+            background-color: #f5f7ff;
+            border-left: 4px solid #6c63ff;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .highlight-title {
+            color: #6c63ff;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .emoji {
+            font-size: 22px;
+            margin-right: 8px;
+        }
+
+        .list-item {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            letter-spacing: 0.2px;
+        }
+
+        .good-luck {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: #6c63ff;
+            text-align: center;
+            margin: 35px 0;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 15px;
+            letter-spacing: 0.2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="content">
+            <div class="logo-container">
+                <img src="https://algofolks.com/images/algofolks-logo.png" alt="Algofolks Logo" class="logo">
+            </div>
+            <div class="header">
+                <div class="welcome-text">Welcome to the Lucky Draw! 🎉</div>
+                <h2>Your Chance to Win Big!</h2>
+            </div>
+
+            <div class="message">
+                Dear {{ name }},
+                <br><br>
+                Thank you for participating in our exclusive lucky draw! 🎊
+                You're now in the running to be one of the three lucky winners
+                who will receive amazing discounts on our services.
+            </div>
+
+            <div class="highlight-box">
+                <div class="highlight-title">
+                    <span class="emoji">🌟</span> What Happens Next?
                 </div>
-                
-                <div class="footer">
-                    <p>Best regards,<br>Team Algofolks</p>
+                <div class="list-item">
+                    <span class="emoji">📧</span> We will announce the winners soon, so keep an eye on your inbox!
+                </div>
+                <div class="list-item">
+                    <span class="emoji">🎁</span> If you're one of the lucky three, you'll receive an exclusive discount
+                    offer.
+                </div>
+                <div class="list-item">
+                    <span class="emoji">💫</span> We truly appreciate your participation and wish you the best of luck!
                 </div>
             </div>
+
+            <div class="good-luck">
+                Stay tuned, and fingers crossed! 🤞
+            </div>
+
+            <div class="footer">
+                <p>Best regards,<br><span style="font-family: 'Playfair Display', serif; font-size: 16px;">Team
+                        Algofolks</span></p>
+            </div>
         </div>
-    </body>
-</html> 
+    </div>
+</body>
+
+</html>
