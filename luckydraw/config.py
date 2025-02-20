@@ -11,8 +11,8 @@ class Config:
     # SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL',
     #     'mysql+pymysql://root:Algofolks123@localhost:3306/lottery?unix_socket=/opt/lampp/var/mysql/mysql.sock')
 
-    SQLALCHEMY_DATABASE_URI = f"mysql://root:Algo1234!@localhost/lucky_draw"
-    #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Algofolks123@localhost:3306/lottery?unix_socket=/opt/lampp/var/mysql/mysql.sock'
+    # SQLALCHEMY_DATABASE_URI = f"mysql://root:Algo1234!@localhost/lucky_draw"
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Algofolks123@localhost:3306/lottery?unix_socket=/opt/lampp/var/mysql/mysql.sock'
 
     # Flask Configuration
     SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key-here')
