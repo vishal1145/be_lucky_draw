@@ -5,242 +5,170 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Lucky Draw!</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-        }
-
-        .header {
-            background-color: #4A55A2;
-            color: white;
-            text-align: center;
-            padding: 30px 20px;
-        }
-
-        .avatar-container {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 15px;
-            position: relative;
-            text-align: center;
-        }
-
-        .avatar img {
-            width: 80px;
-            height: 80px;
-        }
-
-        .chat-bubble {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 24px;
-            height: 24px;
-            background-color: #FF9898;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 24px;
-        }
-
-        h1 {
-            font-size: 28px;
-            margin: 15px 0;
-            color: white;
-        }
-
-        .subtitle {
-            color: white;
-            font-size: 16px;
-            line-height: 1.5;
-            margin: 15px 0;
-        }
-
-        .content {
-            padding: 30px 20px;
-            background-color: white;
-            text-align: center;
-        }
-
-        .section {
-            text-align: center;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .section-item {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px auto;
-            display: inline-block;
-            text-align: left;
-            width: 100%;
-        }
-
-        .section-item img {
-            vertical-align: top;
-            margin-right: 15px;
-            display: inline-block;
-        }
-
-        .section-text {
-            display: inline-block;
-            width: calc(100% - 45px);
-            vertical-align: top;
-        }
-
-        .section-text h3 {
-            margin-top: 0;
-            margin-bottom: 8px;
-        }
-
-        .section-text p {
-            margin: 0;
-        }
-
-        h2 {
-            color: #4A55A2;
-            font-size: 22px;
-            margin: 20px 0;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        h3 {
-            color: #4A55A2;
-            font-size: 18px;
-            margin: 10px 0;
-        }
-
-        .team-signature {
-            text-align: center;
-            margin: 30px auto;
-        }
-
-        .team-signature img {
-            height: 25px;
-            vertical-align: middle;
-            margin-right: 5px;
-        }
-
-        .social-links {
-            text-align: center;
-            margin: 20px auto;
-        }
-
-        .social-links img {
-            width: 24px;
-            height: 24px;
-            margin: 0 10px;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .footer p {
-            margin: 10px 0;
-        }
-
-        .social-icon {
-            width: 24px;
-            height: 24px;
-            fill: #4A55A2;
-        }
-    </style>
 </head>
 
-<body>
-    <div class="container" style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
-        <div class="header">
-            <div class="welcome-content">
-                <div class="avatar-container">
-                    <div class="avatar">
-                        <img src="https://lucky-draw.algofolks.com/static/images/emails/user.png" alt="Welcome Avatar">
-                        <div class="chat-bubble">💭</div>
-                    </div>
-                </div>
-                <h1>Hey, Welcome!</h1>
-                <p class="subtitle">Dear {{ client_name }},<br><br>
-                    Thank you for participating in our exclusive lucky draw! 🎊 You're now in the running to be one of
-                    the three lucky winners who will receive amazing discounts on our services.</p>
-            </div>
-        </div>
-        <div class="content">
-            <div class="section">
-                <h2>🌟 What Happens Next?</h2>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+    <table cellpadding="0" cellspacing="0" width="100%"
+        style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+        <tr>
+            <td style="background-color: #4A55A2; padding: 30px 20px; text-align: center;">
+                <!-- Header Content -->
+                <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="text-align: center;">
+                            <img src="https://lucky-draw.algofolks.com/static/images/emails/user.png"
+                                alt="Welcome Avatar" style="width: 80px; height: 80px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center; padding-top: 20px;">
+                            <h1 style="color: white; font-size: 28px; margin: 0;">Hey, Welcome!</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center; padding-top: 15px;">
+                            <p style="color: white; font-size: 16px; line-height: 1.5; margin: 0;">
+                                Dear {{ name }},<br><br>
+                                Thank you for participating in our exclusive lucky draw! 🎊 You're now in the running to
+                                be one of
+                                the three lucky winners who will receive amazing discounts on our services.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 30px 20px;">
+                <!-- Main Content -->
+                <h2 style="color: #4A55A2; font-size: 22px; text-align: center; margin-bottom: 30px;">🌟 What Happens
+                    Next?</h2>
 
-                <div class="section-item">
-                    <img src="{{ url_for('static', filename='images/emails/bell.png', _external=True) }}"
-                        alt="Notification" class="icon-svg" style="width: 24px; height: 24px;">
-                    <div class="section-text">
-                        <h3>Winner Announcement</h3>
-                        <p>We will announce the winners soon, so keep an eye on your inbox!</p>
-                    </div>
-                </div>
+                <!-- Winner Announcement Section -->
+                <table width="100%" cellpadding="0" cellspacing="0"
+                    style="margin-bottom: 20px; background-color: #f8f9fa; border-radius: 8px;">
+                    <tr>
+                        <td style="padding: 15px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td width="24" style="padding-right: 15px;">
+                                        <img src="https://lucky-draw.algofolks.com/static/images/emails/bell.png"
+                                            alt="Notification" style="width: 24px; height: 24px;">
+                                    </td>
+                                    <td>
+                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0 0 8px 0;">Winner
+                                            Announcement</h3>
+                                        <p style="margin: 0; color: #666;">We will announce the winners soon, so keep an
+                                            eye on your inbox!</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
 
-                <div class="section-item">
-                    <img src="{{ url_for('static', filename='images/emails/gift-box-with-a-ribbon-on-top.png', _external=True) }}"
-                        alt="Gift" class="icon-svg" style="width: 24px; height: 24px;">
-                    <div class="section-text">
-                        <h3>Exclusive Discounts</h3>
-                        <p>If you're one of the lucky three, you'll receive an exclusive discount offer.</p>
-                    </div>
-                </div>
+                <!-- Exclusive Discounts Section -->
+                <table width="100%" cellpadding="0" cellspacing="0"
+                    style="margin-bottom: 20px; background-color: #f8f9fa; border-radius: 8px;">
+                    <tr>
+                        <td style="padding: 15px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td width="24" style="padding-right: 15px;">
+                                        <img src="https://lucky-draw.algofolks.com/static/images/emails/gift-box-with-a-ribbon-on-top.png"
+                                            alt="Gift" style="width: 24px; height: 24px;">
+                                    </td>
+                                    <td>
+                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0 0 8px 0;">Exclusive
+                                            Discounts</h3>
+                                        <p style="margin: 0; color: #666;">If you're one of the lucky three, you'll
+                                            receive an exclusive discount offer.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
 
-                <div class="section-item">
-                    <img src="{{ url_for('static', filename='images/emails/checklist.png', _external=True) }}"
-                        alt="Checklist" class="icon-svg" style="width: 24px; height: 24px;">
-                    <div class="section-text">
-                        <h3>Stay Tuned</h3>
-                        <p>We truly appreciate your participation and wish you the best of luck!</p>
-                    </div>
-                </div>
-            </div>
+                <!-- Stay Tuned Section -->
+                <table width="100%" cellpadding="0" cellspacing="0"
+                    style="margin-bottom: 20px; background-color: #f8f9fa; border-radius: 8px;">
+                    <tr>
+                        <td style="padding: 15px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td width="24" style="padding-right: 15px;">
+                                        <img src="https://lucky-draw.algofolks.com/static/images/emails/checklist.png"
+                                            alt="Checklist" style="width: 24px; height: 24px;">
+                                    </td>
+                                    <td>
+                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0 0 8px 0;">Stay Tuned</h3>
+                                        <p style="margin: 0; color: #666;">We truly appreciate your participation and
+                                            wish you the best of luck!</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
 
-            <p class="center-text">Stay tuned, and fingers crossed! 🤞</p>
+                <!-- Signature -->
+                <p style="text-align: center; margin: 30px 0;">Stay tuned, and fingers crossed! 🤞</p>
 
-            <div class="team-signature">
-                <img src="https://algofolks.com/images/algofolks-logo.png" alt="Algofolks"
-                    style="height: 25px; vertical-align: middle; margin-right: 5px;">
-                <span style="vertical-align: middle;">Algofolks Team</span>
-            </div>
+                <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
+                    <tr>
+                        <td style="text-align: center;">
+                            <img src="https://algofolks.com/images/algofolks-logo.png" alt="Algofolks"
+                                style="height: 25px; vertical-align: middle; margin-right: 5px;">
+                            <span style="vertical-align: middle;">Algofolks Team</span>
+                        </td>
+                    </tr>
+                </table>
 
-            <div class="footer">
-                <div class="social-links">
-                    <a href="#"><img
-                            src="{{ url_for('static', filename='images/emails/facebook.png', _external=True) }}"
-                            alt="Facebook" style="width: 24px; height: 24px; margin: 0 10px;"></a>
-                    <a href="#"><img
-                            src="{{ url_for('static', filename='images/emails/instagram-logo.png', _external=True) }}"
-                            alt="Instagram" style="width: 24px; height: 24px; margin: 0 10px;"></a>
-                    <a href="#"><img
-                            src="{{ url_for('static', filename='images/emails/twitter-logo.png', _external=True) }}"
-                            alt="Twitter" style="width: 24px; height: 24px; margin: 0 10px;"></a>
-                    <a href="#"><img
-                            src="{{ url_for('static', filename='images/emails/linkedin.png', _external=True) }}"
-                            alt="LinkedIn" style="width: 24px; height: 24px; margin: 0 10px;"></a>
-                </div>
-
-                <p>C-104 B-06,Sector-65 Noida, Uttar Pradesh, India<br>
-                    +91 8743045170 | <a href="mailto:info@website.com">info@website.com</a> | <a
-                        href="https://algofolks.com/" target="_blank">www.algofolks.com</a></p>
-
-                <p><a href="#">Unsubscribe</a> | <a href="https://algofolks.com/policy" target="_blank">Privacy
-                        Policy</a></p>
-            </div>
-        </div>
-    </div>
+                <!-- Footer -->
+                <table width="100%" cellpadding="0" cellspacing="0"
+                    style="margin-top: 30px; border-top: 1px solid #eee;">
+                    <tr>
+                        <td style="text-align: center; padding: 20px 0;">
+                            <!-- Social Links -->
+                            <a href="#" style="text-decoration: none; margin: 0 10px;">
+                                <img src="https://lucky-draw.algofolks.com/static/images/emails/facebook.png"
+                                    alt="Facebook" style="width: 24px; height: 24px;">
+                            </a>
+                            <a href="#" style="text-decoration: none; margin: 0 10px;">
+                                <img src="https://lucky-draw.algofolks.com/static/images/emails/instagram-logo.png"
+                                    alt="Instagram" style="width: 24px; height: 24px;">
+                            </a>
+                            <a href="#" style="text-decoration: none; margin: 0 10px;">
+                                <img src="https://lucky-draw.algofolks.com/static/images/emails/twitter-logo.png"
+                                    alt="Twitter" style="width: 24px; height: 24px;">
+                            </a>
+                            <a href="#" style="text-decoration: none; margin: 0 10px;">
+                                <img src="https://lucky-draw.algofolks.com/static/images/emails/linkedin.png"
+                                    alt="LinkedIn" style="width: 24px; height: 24px;">
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center; padding: 10px 0; color: #666; font-size: 12px;">
+                            <p style="margin: 10px 0;">
+                                C-104 B-06,Sector-65 Noida, Uttar Pradesh, India<br>
+                                +91 8743045170 | <a href="mailto:info@website.com"
+                                    style="color: #4A55A2;">info@website.com</a> |
+                                <a href="https://algofolks.com/" target="_blank"
+                                    style="color: #4A55A2;">www.algofolks.com</a>
+                            </p>
+                            <p style="margin: 10px 0;">
+                                <a href="#" style="color: #4A55A2; text-decoration: none;">Unsubscribe</a> |
+                                <a href="https://algofolks.com/policy" target="_blank"
+                                    style="color: #4A55A2; text-decoration: none;">Privacy Policy</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 
 </html>

@@ -38,6 +38,4 @@ def uploaded_file(filename):
 
 @main_bp.route('/api/welcome-email', methods=['GET'])
 def get_welcome_email():
-    domain = request.host_url.rstrip('/')  # Get the domain
-    return render_template('emails/welcome_email.html', 
-                         domain_name=domain)
+    return render_template('emails/welcome_email.html')
