@@ -29,11 +29,18 @@ class RegistrationController:
                 if not form_data.get(field):
                     return jsonify({'error': f'Missing required field: {field}'}), 400
 
-            # Check if email already exists
+            # Check for existing email
             existing_registration = Registration.query.filter_by(email=form_data['email']).first()
             if existing_registration:
                 return jsonify({
                     'error': 'Email already registered'
+                }), 400
+
+            # Check for existing phone number
+            existing_phone = Registration.query.filter_by(mobile_number=form_data['phone']).first()
+            if existing_phone:
+                return jsonify({
+                    'error': 'Phone number already registered'
                 }), 400
 
             # Handle image upload
