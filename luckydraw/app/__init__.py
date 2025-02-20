@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_cors import CORS
 from config import Config
 from app.services.email_service import mail
 from dotenv import load_dotenv
@@ -18,6 +19,19 @@ pymysql.install_as_MySQLdb()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
+    
+    # Enable CORS
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": [
+                "http://localhost:8080",  # Vue.js default development port
+                "http://localhost:5173",  # Vite's default development port
+                "https://lucky-draw.algofolks.com"
+            ],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
     
     # Load configuration
     app.config.from_object(config_class)
