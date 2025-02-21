@@ -10,13 +10,19 @@ class Announcement(db.Model):
     announcement_date = db.Column(db.DateTime,nullable=False)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
+    status = db.Column(db.String(20), default='active')  # active, completed, cancelled, etc.
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def to_dict(self):
         return {
             'id': self.id,
             'announcement_date': self.announcement_date.strftime('%Y-%m-%d %H:%M:%S'),
             'title': self.title,
-            'description': self.description
+            'description': self.description,
+            'status': self.status,
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'updated_at': self.updated_at.strftime('%Y-%m-%d %H:%M:%S')
         }
     
     @validates('title')

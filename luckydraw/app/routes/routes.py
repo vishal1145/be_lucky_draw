@@ -58,34 +58,69 @@ def get_welcome_email():
                          name="Test User",
                          share_url="https://algofolks.com")
 
+@main_bp.route('/api/announcement', methods=['GET'])
+def get_announcements():
+    """Get all announcements or filter by status"""
+    try:
+        # Get query parameter for status filtering
+        # status = request.args.get('status', None)
+        
+        # if status:
+        #     announcements = Announcement.query.filter_by(status=status).order_by(Announcement.announcement_date.desc()).all()
+        
+        announcements = Announcement.query.order_by(Announcement.announcement_date.desc()).all()
+        
+        return jsonify({
+            'status': 'success',
+            'data': [announcement.to_dict() for announcement in announcements]
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
 
-@main_bp.route('/api/announcement',methods=['POST'])
+@main_bp.route('/api/announcement', methods=['POST'])
 def create_announcement():
-   try:
-       data = request.get_json()        
-       if not data or 'title' not in data:
-           return jsonify({
-               'status':'error',
-               'message':'title is required'
-           }),200
-       new_announcement = Announcement(
-           title=data.get('title'),
-           description=data.get('description'),
-           announcement_date=data.get('announcement_date')
-       )
-       db.session.add(new_announcement)
-       db.session.commit()
-       return jsonify({
-           'status':"success",
-           'message':new_announcement.to_dict()
+    """Create new announcement and delete previous ones"""
+    try:
+        data = request.get_json()
+        if not data or 'title' not in data:
+            return jsonify({
+                'status': 'error',
+                'message': 'title is required'
+            }), 400
 
-       }),201
-   except Exception as e:
-       db.session.rollback()
-       return jsonify({
-           'status':'error',
-           'message':str(e)
-       }),500
+        # Delete all previous announcements
+        try:
+            Announcement.query.delete()
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error deleting previous announcements: {str(e)}")
+
+        # Create new announcement
+        new_announcement = Announcement(
+            title=data.get('title'),
+            description=data.get('description'),
+            announcement_date=data.get('announcement_date')
+        )
+        
+        db.session.add(new_announcement)
+        db.session.commit()
+
+        return jsonify({
+            'status': 'success',
+            'message': 'Previous announcements deleted and new announcement created',
+            'data': new_announcement.to_dict()
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
 
 @main_bp.route('/test/email/results/<int:announcement_id>')
 def test_results_email(announcement_id):
@@ -127,3 +162,19 @@ def send_announcement_reminders():
             "status": "error",
             "message": str(e)
         }, 500
+
+@main_bp.route('/api/send-results-notification/<int:announcement_id>', methods=['GET'])
+def send_results_notification(announcement_id):
+    """API endpoint to trigger sending results notification to all users"""
+    try:
+        announcement = Announcement.query.get_or_404(announcement_id)
+        AnnouncementService.send_results_notification(announcement)
+        return jsonify({
+            "status": "success",
+            "message": f"Results notification for '{announcement.title}' sent successfully to all users"
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
