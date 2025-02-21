@@ -34,14 +34,14 @@ class RegistrationController:
             if existing_registration:
                 return jsonify({
                     'error': 'Email already registered'
-                }), 400
+                }), 200
 
             # Check for existing phone number
             existing_phone = Registration.query.filter_by(mobile_number=form_data['phone']).first()
             if existing_phone:
                 return jsonify({
                     'error': 'Phone number already registered'
-                }), 400
+                }), 200
 
             # Handle image upload
             image = request.files.get('image')
