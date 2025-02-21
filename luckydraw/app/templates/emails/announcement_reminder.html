@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Lucky Draw!</title>
+    <title>Lucky Draw Announcement Reminder</title>
 </head>
 
 <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
@@ -16,22 +16,20 @@
                 <table width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td style="text-align: center;">
-                            <img src="https://lucky-draw.algofolks.com/static/images/emails/user.png"
-                                alt="Welcome Avatar" style="width: 80px; height: 80px;">
+                            <img src="https://lucky-draw.algofolks.com/static/images/emails/bell.png"
+                                alt="Reminder Avatar" style="width: 80px; height: 80px;">
                         </td>
                     </tr>
                     <tr>
                         <td style="text-align: center; padding-top: 20px;">
-                            <h1 style="color: white; font-size: 28px; margin: 0;">Hey, Welcome!</h1>
+                            <h1 style="color: white; font-size: 28px; margin: 0;">Upcoming Announcement!</h1>
                         </td>
                     </tr>
                     <tr>
                         <td style="text-align: center; padding-top: 15px;">
                             <p style="color: white; font-size: 16px; line-height: 1.5; margin: 0;">
                                 Dear {{ name }},<br><br>
-                                Thank you for participating in our exclusive lucky draw! 🎊 You're now in the running to
-                                be one of
-                                the three lucky winners who will receive amazing discounts on our services.
+                                We have an important announcement coming up! 📢
                             </p>
                         </td>
                     </tr>
@@ -41,10 +39,10 @@
         <tr>
             <td style="padding: 30px 20px;">
                 <!-- Main Content -->
-                <h2 style="color: #4A55A2; font-size: 22px; text-align: center; margin-bottom: 30px;">🌟 What Happens
-                    Next?</h2>
+                <h2 style="color: #4A55A2; font-size: 22px; text-align: center; margin-bottom: 30px;">🗓️ Announcement
+                    Details</h2>
 
-                <!-- Winner Announcement Section -->
+                <!-- Announcement Section -->
                 <table width="100%" cellpadding="0" cellspacing="0"
                     style="margin-bottom: 20px; background-color: #f8f9fa; border-radius: 8px;">
                     <tr>
@@ -52,37 +50,16 @@
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td width="24" style="padding-right: 15px;">
-                                        <img src="https://lucky-draw.algofolks.com/static/images/emails/bell.png"
-                                            alt="Notification" style="width: 24px; height: 24px;">
+                                        <img src="https://lucky-draw.algofolks.com/static/images/emails/checklist.png"
+                                            alt="Details" style="width: 24px; height: 24px;">
                                     </td>
                                     <td>
-                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0 0 8px 0;">Winner
-                                            Announcement</h3>
-                                        <p style="margin: 0; color: #666;">We will announce the winners soon, so keep an
-                                            eye on your inbox!</p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-
-                <!-- Exclusive Discounts Section -->
-                <table width="100%" cellpadding="0" cellspacing="0"
-                    style="margin-bottom: 20px; background-color: #f8f9fa; border-radius: 8px;">
-                    <tr>
-                        <td style="padding: 15px;">
-                            <table width="100%" cellpadding="0" cellspacing="0">
-                                <tr>
-                                    <td width="24" style="padding-right: 15px;">
-                                        <img src="https://lucky-draw.algofolks.com/static/images/emails/gift-box-with-a-ribbon-on-top.png"
-                                            alt="Gift" style="width: 24px; height: 24px;">
-                                    </td>
-                                    <td>
-                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0 0 8px 0;">Exclusive
-                                            Discounts</h3>
-                                        <p style="margin: 0; color: #666;">If you're one of the lucky three, you'll
-                                            receive an exclusive discount offer.</p>
+                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0 0 8px 0;">Event Details
+                                        </h3>
+                                        <p style="margin: 0; color: #666;">{{ announcement.title }}</p>
+                                        <p style="margin: 5px 0; color: #666;">Date: {{
+                                            announcement.announcement_date.strftime('%d %B %Y') }}</p>
+                                        <p style="margin: 5px 0; color: #666;">{{ announcement.description }}</p>
                                     </td>
                                 </tr>
                             </table>
@@ -98,13 +75,14 @@
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td width="24" style="padding-right: 15px;">
-                                        <img src="https://lucky-draw.algofolks.com/static/images/emails/checklist.png"
-                                            alt="Checklist" style="width: 24px; height: 24px;">
+                                        <img src="https://lucky-draw.algofolks.com/static/images/emails/gift-box-with-a-ribbon-on-top.png"
+                                            alt="Gift" style="width: 24px; height: 24px;">
                                     </td>
                                     <td>
-                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0 0 8px 0;">Stay Tuned</h3>
-                                        <p style="margin: 0; color: #666;">We truly appreciate your participation and
-                                            wish you the best of luck!</p>
+                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0 0 8px 0;">Stay Tuned!</h3>
+                                        <p style="margin: 0; color: #666;">Don't miss this important announcement. Make
+                                            sure
+                                            to check your account on the announcement date!</p>
                                     </td>
                                 </tr>
                             </table>
@@ -113,7 +91,7 @@
                 </table>
 
                 <!-- Signature -->
-                <p style="text-align: center; margin: 30px 0;">Stay tuned, and fingers crossed! 🤞</p>
+                <p style="text-align: center; margin: 30px 0;">We'll see you soon! 👋</p>
 
                 <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
                     <tr>
@@ -131,22 +109,22 @@
                     <tr>
                         <td style="text-align: center; padding: 20px 0;">
                             <!-- Social Links -->
-                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_url }}"
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=https://algofolks.com"
                                 style="text-decoration: none; margin: 0 10px;" target="_blank">
                                 <img src="https://lucky-draw.algofolks.com/static/images/emails/facebook.png"
                                     alt="Share on Facebook" style="width: 24px; height: 24px;">
                             </a>
-                            <a href="https://api.whatsapp.com/send?text=Check out Lucky Draw at {{ share_url }}"
+                            <a href="https://api.whatsapp.com/send?text=Check out Lucky Draw at https://algofolks.com"
                                 style="text-decoration: none; margin: 0 10px;" target="_blank">
                                 <img src="https://lucky-draw.algofolks.com/static/images/emails/whatsapp.png"
                                     alt="Share on WhatsApp" style="width: 24px; height: 24px;">
                             </a>
-                            <a href="https://twitter.com/intent/tweet?url={{ share_url }}&text=Check out Lucky Draw!"
+                            <a href="https://twitter.com/intent/tweet?url=https://algofolks.com&text=Check out Lucky Draw!"
                                 style="text-decoration: none; margin: 0 10px;" target="_blank">
                                 <img src="https://lucky-draw.algofolks.com/static/images/emails/twitter-logo.png"
                                     alt="Share on Twitter" style="width: 24px; height: 24px;">
                             </a>
-                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_url }}"
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://algofolks.com"
                                 style="text-decoration: none; margin: 0 10px;" target="_blank">
                                 <img src="https://lucky-draw.algofolks.com/static/images/emails/linkedin.png"
                                     alt="Share on LinkedIn" style="width: 24px; height: 24px;">

@@ -43,11 +43,11 @@ def create_app(config_class=Config):
     
     # Initialize extensions with app
     db.init_app(app)
-    migrate.init_app(app)
+    migrate.init_app(app, db)
     mail.init_app(app)
     
     # Import models to ensure they're registered with SQLAlchemy
-    from app.models import registration, otp
+    from app.models import registration, otp, announcement
     
     # Create database tables
     with app.app_context():

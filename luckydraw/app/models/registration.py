@@ -1,6 +1,7 @@
 from app import db
 from datetime import datetime
 import random
+from sqlalchemy.orm import validates
 
 class Registration(db.Model):
     __tablename__ = 'registrations'
@@ -16,6 +17,9 @@ class Registration(db.Model):
     image_url = db.Column(db.String(255))
     is_verified = db.Column(db.Boolean, default=True)
     is_active = db.Column(db.Boolean, default=True)
+    registration_date = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
 
     def __repr__(self):
         return f'<Registration {self.name}>'
@@ -40,4 +44,4 @@ class Registration(db.Model):
         all_users = cls.query.all()
         if len(all_users) < count:
             return all_users
-        return random.sample(all_users, count) 
+        return random.sample(all_users, count)

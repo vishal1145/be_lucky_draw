@@ -8,11 +8,12 @@ from datetime import datetime, timedelta
 import os
 from werkzeug.utils import secure_filename
 from app.utils.file_helpers import allowed_file
-
+from app.models.announcement import Announcement
 class RegistrationController:
     @staticmethod
     def initiate_verification(data):
         try:
+            
             # Get form data
             form_data = {
                 'name': request.form.get('name'),
@@ -126,10 +127,10 @@ class RegistrationController:
             phone_otp = data.get('phone_otp')
 
             otp_record = OTP.query.get(temp_id)
-            
+
             if not otp_record:
                 return jsonify({'error': 'Invalid temporary ID'}), 400
-                
+
             if datetime.utcnow() > otp_record.expires_at:
                 return jsonify({'error': 'OTPs expired'}), 400
 
@@ -139,7 +140,22 @@ class RegistrationController:
             if phone_otp != otp_record.phone_otp:
                 return jsonify({'error': 'Invalid phone OTP'}), 400
 
-            # Create registration with image_url
+            # Fetch the latest announcement date
+            latest_announcement = Announcement.query.order_by(Announcement.announcement_date.desc()).first()
+            if not latest_announcement:
+                return jsonify({'error': 'No announcements found'}), 400
+
+            # Check if registration_date is within 1 day from announcement_date
+            announcement_date = latest_announcement.announcement_date
+            registration_date = datetime.utcnow()
+
+            # Allow registration ONLY one day before the announcement date
+            allowed_registration_date = announcement_date - timedelta(days=1)
+
+            if registration_date != allowed_registration_date:
+                return jsonify({'error': 'Registration is only allowed one day before the announcement date'}), 403
+
+            # Create registration
             new_registration = Registration(
                 name=otp_record.name,
                 email=otp_record.email,
@@ -147,9 +163,10 @@ class RegistrationController:
                 mobile_number=otp_record.phone,
                 technologies=otp_record.technologies,
                 requirements=otp_record.requirements,
-                image_url=otp_record.image_url
+                image_url=otp_record.image_url,
+                registration_date=registration_date
             )
-            
+
             db.session.add(new_registration)
             db.session.delete(otp_record)
             db.session.commit()
@@ -171,6 +188,7 @@ class RegistrationController:
                 'error': 'Verification failed',
                 'message': str(e)
             }), 400
+
 
     @staticmethod
     def get_all_users():
