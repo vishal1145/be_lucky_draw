@@ -112,3 +112,18 @@ def test_send_results_notification(announcement_id):
             "status": "error",
             "message": str(e)
         }, 500
+
+@main_bp.route('/api/send-announcement-reminders', methods=['GET'])
+def send_announcement_reminders():
+    """API endpoint to trigger sending announcement reminders"""
+    try:
+        AnnouncementService.send_announcement_reminders()
+        return {
+            "status": "success",
+            "message": "Announcement reminders sent successfully"
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }, 500
