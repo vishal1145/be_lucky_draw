@@ -152,7 +152,7 @@ class RegistrationController:
             # Allow registration ONLY one day before the announcement date
             allowed_registration_date = announcement_date - timedelta(days=1)
 
-            if registration_date != allowed_registration_date:
+            if registration_date == allowed_registration_date:
                 return jsonify({'error': 'Registration is only allowed one day before the announcement date'}), 403
 
             # Create registration
