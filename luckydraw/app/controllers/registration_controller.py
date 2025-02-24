@@ -1,7 +1,7 @@
 from app import db
 from app.models.registration import Registration
 from app.models.otp import OTP
-from flask import jsonify, current_app, request
+from flask import jsonify, current_app, request, render_template
 from app.services.email_service import EmailService
 from app.services.sms_service import SMSService
 from datetime import datetime, timedelta
@@ -246,4 +246,35 @@ class RegistrationController:
             return jsonify({
                 'error': 'Failed to select winners',
                 'message': str(e)
-            }), 500 
+            }), 500
+
+    @staticmethod
+    def get_registrations_page():
+        try:
+            page = request.args.get('page', 1, type=int)
+            per_page = 10
+
+            # Get paginated users
+            pagination = Registration.query.paginate(
+                page=page, per_page=per_page, error_out=False
+            )
+            users = pagination.items
+
+            total_registrations = Registration.query.count()
+            verified_count = Registration.query.filter_by(is_verified=True).count()
+            countries_count = db.session.query(Registration.country_code).distinct().count()
+            
+
+            return render_template('registrations.html',
+                users=users,
+                page=page,
+                per_page=per_page,
+                total_pages=pagination.pages,
+                total_registrations=total_registrations,
+                verified_count=verified_count,
+                countries_count=countries_count,
+            )
+
+        except Exception as e:
+            current_app.logger.error(f"Error fetching registrations: {str(e)}")
+            return render_template('error.html', message=f"Failed to load registrations: {str(e)}"), 500 

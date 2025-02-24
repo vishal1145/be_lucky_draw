@@ -178,3 +178,7 @@ def send_results_notification(announcement_id):
             "status": "error",
             "message": str(e)
         }), 500
+
+@main_bp.route('/registrations')
+def registrations():
+    return RegistrationController.get_registrations_page()

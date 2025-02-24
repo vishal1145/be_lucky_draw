@@ -28,10 +28,10 @@ class AIService:
 
             if "choices" in response_data and response_data["choices"]:
                 score_str = response_data["choices"][0]["message"]["content"].strip()
-                score = float(score_str.split()[0])  # Extract the numeric value
+                score = float(score_str.split()[0]) 
                 return min(max(score, 0), 100)
 
-            return random.randint(40, 60)  # Default fallback score
+            return random.randint(40, 60)  
 
         except Exception as e:
             current_app.logger.error(f"AI evaluation error: {str(e)}")
