@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f4f9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40vh;
+            background: linear-gradient(135deg, #28365f 0%, #1e4d92 100%);
+            transform: skewY(-5deg);
+            transform-origin: top left;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            padding: 2.5rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin: 1rem;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #28365f, #1e4d92);
+            border-radius: 12px 12px 0 0;
+        }
+
+        h2 {
+            color: #28365f;
+            font-size: 1.8rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 0.8rem;
+            background: #fef2f2;
+            border-radius: 6px;
+            border: 1px solid #fee2e2;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            color: #445;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e8eef7;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #2c3345;
+            background: #f8fafd;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #28365f;
+            box-shadow: 0 0 0 3px rgba(40, 54, 95, 0.1);
+            outline: none;
+            background: #ffffff;
+        }
+
+        .form-group button {
+            position: absolute;
+            right: 1rem;
+            top: 2.3rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #64748b;
+            padding: 0.2rem;
+        }
+
+        .form-group button:hover {
+            color: #28365f;
+        }
+
+        .form-group input[type="password"],
+        .form-group input[type="text"] {
+            padding-right: 2.5rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #28365f 0%, #1e4d92 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(30, 77, 146, 0.15);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 77, 146, 0.2);
+            background: linear-gradient(135deg, #1e2d4f 0%, #183d75 100%);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(30, 77, 146, 0.1);
+        }
+
+        @media screen and (max-width: 480px) {
+            .container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            h2 {
+                font-size: 1.6rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group {
+                margin-bottom: 1.2rem;
+            }
+
+            .form-group input {
+                padding: 0.7rem 0.9rem;
+                font-size: 0.95rem;
+            }
+
+            .login-btn {
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Login</h2>
+
+        {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('main.login') }}">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <button type="button" onclick="togglePassword()">
+                    <svg width="20" height="20" viewBox="0 0 640 512" fill="currentColor" stroke="none">
+                        <!-- Eye Open -->
+                        <path class="eye-open"
+                            d="M288 144a110.94 110.94 0 0 0-31.24 5 55.4 55.4 0 0 1 7.24 27 56 56 0 0 1-56 56 55.4 55.4 0 0 1-27-7.24A111.71 111.71 0 1 0 288 144zm284.52 97.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400c-98.65 0-189.09-55-237.93-144C98.91 167 189.34 112 288 112s189.09 55 237.93 144C477.1 345 386.66 400 288 400z" />
+
+                        <!-- Eye Closed -->
+                        <path class="eye-closed"
+                            d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zm151 118.3C226 97.7 269.5 80 320 80c65.2 0 118.8 29.6 159.9 67.7C518.4 183.5 545 226 558.6 256c-12.6 28-36.6 66.8-70.9 100.9l-53.8-42.2c9.1-17.6 14.2-37.5 14.2-58.7c0-70.7-57.3-128-128-128c-32.2 0-61.7 11.9-84.2 31.5l-46.1-36.1zM394.9 284.2l-81.5-63.9c4.2-8.5 6.6-18.2 6.6-28.3c0-5.5-.7-10.9-2-16c.7 0 1.3 0 2 0c44.2 0 80 35.8 80 80c0 9.9-1.8 19.4-5.1 28.2zm9.4 130.3C378.8 425.4 350.7 432 320 432c-65.2 0-118.8-29.6-159.9-67.7C121.6 328.5 95 286 81.4 256c8.3-18.4 21.5-41.5 39.4-64.8L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5l-41.9-33zM192 256c0 70.7 57.3 128 128 128c13.3 0 26.1-2 38.2-5.8L302 334c-23.5-5.4-43.1-21.2-53.7-42.3l-56.1-44.2c-.2 2.8-.3 5.6-.3 8.5z" />
+                    </svg>
+                </button>
+            </div>
+
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const type = passwordField.type === 'password' ? 'text' : 'password';
+            passwordField.type = type;
+
+            // Toggle eye icon
+            const eyeOpen = document.querySelectorAll('.eye-open');
+            const eyeClosed = document.querySelectorAll('.eye-closed');
+            eyeOpen.forEach(el => el.style.display = type === 'password' ? 'none' : 'block');
+            eyeClosed.forEach(el => el.style.display = type === 'password' ? 'block' : 'none');
+        }
+
+        // Initialize eye icon state
+        document.addEventListener('DOMContentLoaded', () => {
+            const eyeOpen = document.querySelectorAll('.eye-open');
+            const eyeClosed = document.querySelectorAll('.eye-closed');
+            eyeOpen.forEach(el => el.style.display = 'none');
+            eyeClosed.forEach(el => el.style.display = 'block');
+        });
+    </script>
+</body>
+
+</html>

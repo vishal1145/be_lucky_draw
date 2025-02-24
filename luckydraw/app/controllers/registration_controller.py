@@ -252,18 +252,101 @@ class RegistrationController:
     def get_registrations_page():
         try:
             page = request.args.get('page', 1, type=int)
+            country_filter = request.args.get('country', None)
             per_page = 10
 
+            
+            country_codes = {
+                '+43': {'name': 'Austria', 'code': 'at'},
+                '+61': {'name': 'Australia', 'code': 'au'},
+                '+973': {'name': 'Bahrain', 'code': 'bh'},
+                '+32': {'name': 'Belgium', 'code': 'be'},
+                '+55': {'name': 'Brazil', 'code': 'br'},
+                '+359': {'name': 'Bulgaria', 'code': 'bg'},
+                '+1': {'name': 'Canada', 'code': 'ca'},
+                '+86': {'name': 'China', 'code': 'cn'},
+                '+57': {'name': 'Colombia', 'code': 'co'},
+                '+385': {'name': 'Croatia', 'code': 'hr'},
+                '+357': {'name': 'Cyprus', 'code': 'cy'},
+                '+420': {'name': 'Czech Republic', 'code': 'cz'},
+                '+45': {'name': 'Denmark', 'code': 'dk'},
+                '+20': {'name': 'Egypt', 'code': 'eg'},
+                '+372': {'name': 'Estonia', 'code': 'ee'},
+                '+358': {'name': 'Finland', 'code': 'fi'},
+                '+33': {'name': 'France', 'code': 'fr'},
+                '+49': {'name': 'Germany', 'code': 'de'},
+                '+30': {'name': 'Greece', 'code': 'gr'},
+                '+36': {'name': 'Hungary', 'code': 'hu'},
+                '+354': {'name': 'Iceland', 'code': 'is'},
+                '+91': {'name': 'India', 'code': 'in'},
+                '+62': {'name': 'Indonesia', 'code': 'id'},
+                '+353': {'name': 'Ireland', 'code': 'ie'},
+                '+972': {'name': 'Israel', 'code': 'il'},
+                '+39': {'name': 'Italy', 'code': 'it'},
+                '+81': {'name': 'Japan', 'code': 'jp'},
+                '+962': {'name': 'Jordan', 'code': 'jo'},
+                '+7': {'name': 'Kazakhstan', 'code': 'kz'},
+                '+965': {'name': 'Kuwait', 'code': 'kw'},
+                '+856': {'name': 'Laos', 'code': 'la'},
+                '+371': {'name': 'Latvia', 'code': 'lv'},
+                '+423': {'name': 'Liechtenstein', 'code': 'li'},
+                '+370': {'name': 'Lithuania', 'code': 'lt'},
+                '+352': {'name': 'Luxembourg', 'code': 'lu'},
+                '+60': {'name': 'Malaysia', 'code': 'my'},
+                '+356': {'name': 'Malta', 'code': 'mt'},
+                '+52': {'name': 'Mexico', 'code': 'mx'},
+                '+377': {'name': 'Monaco', 'code': 'mc'},
+                '+31': {'name': 'Netherlands', 'code': 'nl'},
+                '+64': {'name': 'New Zealand', 'code': 'nz'},
+                '+47': {'name': 'Norway', 'code': 'no'},
+                '+968': {'name': 'Oman', 'code': 'om'},
+                '+92': {'name': 'Pakistan', 'code': 'pk'},
+                '+507': {'name': 'Panama', 'code': 'pa'},
+                '+63': {'name': 'Philippines', 'code': 'ph'},
+                '+48': {'name': 'Poland', 'code': 'pl'},
+                '+351': {'name': 'Portugal', 'code': 'pt'},
+                '+40': {'name': 'Romania', 'code': 'ro'},
+                '+7': {'name': 'Russia', 'code': 'ru'},
+                '+966': {'name': 'Saudi Arabia', 'code': 'sa'},
+                '+381': {'name': 'Serbia', 'code': 'rs'},
+                '+65': {'name': 'Singapore', 'code': 'sg'},
+                '+421': {'name': 'Slovakia', 'code': 'sk'},
+                '+386': {'name': 'Slovenia', 'code': 'si'},
+                '+27': {'name': 'South Africa', 'code': 'za'},
+                '+34': {'name': 'Spain', 'code': 'es'},
+                '+94': {'name': 'Sri Lanka', 'code': 'lk'},
+                '+46': {'name': 'Sweden', 'code': 'se'},
+                '+41': {'name': 'Switzerland', 'code': 'ch'},
+                '+886': {'name': 'Taiwan', 'code': 'tw'},
+                '+66': {'name': 'Thailand', 'code': 'th'},
+                '+90': {'name': 'Turkey', 'code': 'tr'},
+                '+971': {'name': 'United Arab Emirates', 'code': 'ae'},
+                '+44': {'name': 'United Kingdom', 'code': 'gb'},
+                '+1': {'name': 'United States', 'code': 'us'},
+                '+84': {'name': 'Vietnam', 'code': 'vn'}
+            }
+
+            # Base query
+            query = Registration.query
+
+            # Apply country filter if specified
+            if country_filter:
+                if country_filter != 'all':
+                    query = query.filter_by(country_code=country_filter)
+
+            # Order by registration date descending
+            query = query.order_by(Registration.created_at.desc())
+
             # Get paginated users
-            pagination = Registration.query.paginate(
+            pagination = query.paginate(
                 page=page, per_page=per_page, error_out=False
             )
             users = pagination.items
 
-            total_registrations = Registration.query.count()
-            verified_count = Registration.query.filter_by(is_verified=True).count()
+            # Get filtered counts
+            total_registrations = query.count()
+            verified_count = query.filter_by(is_verified=True).count()
             countries_count = db.session.query(Registration.country_code).distinct().count()
-            
 
             return render_template('registrations.html',
                 users=users,
@@ -273,6 +356,8 @@ class RegistrationController:
                 total_registrations=total_registrations,
                 verified_count=verified_count,
                 countries_count=countries_count,
+                selected_country=country_filter,
+                country_codes=country_codes
             )
 
         except Exception as e:
