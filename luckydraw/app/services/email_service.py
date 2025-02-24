@@ -124,7 +124,7 @@ class EmailService:
                             </div>
                             
                             <div class="footer">
-                                <p>Best regards,<br>Team Muhandis Market</p>
+                                <p>Best regards,<br>Team Algofolks</p>
                             </div>
                         </div>
                     </div>
@@ -242,7 +242,7 @@ class EmailService:
                             </div>
                             
                             <div class="message">
-                                Welcome to Muhandis Market, the leading platform for freelance Engineers and Architects! 
+                                Welcome to Algofolks , the leading platform for freelance Engineers and Architects! 
                                 We're excited to have you join our community.
                             </div>
                             
@@ -265,7 +265,7 @@ class EmailService:
                             </div>
                             
                             <div class="footer">
-                                <p>Best,<br>Team Muhandis Market</p>
+                                <p>Best,<br>Team Algofolks </p>
                             </div>
                         </div>
                     </div>

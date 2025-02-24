@@ -206,36 +206,38 @@ class RegistrationController:
     @staticmethod
     def select_winners():
         try:
-            winners = Registration.select_winners(3)
+            winners_data = Registration.select_winners(3)
             
-            if not winners:
+            if not winners_data:
                 return jsonify({
-                    'error': 'No registered users found'
+                    'error': 'Unable to select winners. Ensure there are eligible candidates from UK (+44), US (+1), and India (+91)'
                 }), 404
 
-            winners_data = []
-            for winner in winners:
-                # Send notification email
+            response_data = []
+            for index, (winner, score, country) in enumerate(winners_data, 1):
                 EmailService.send_winner_email(
                     email=winner.email,
                     name=winner.name
                 )
                 
-                # Send SMS notification
                 SMSService.send_winner_sms(
                     phone_number=f"{winner.country_code}{winner.mobile_number}",
                     name=winner.name
                 )
                 
-                winners_data.append({
+                response_data.append({
+                    "position": index,  
                     "name": winner.name,
                     "email": winner.email,
-                    "phone": winner.mobile_number
+                    "phone": winner.mobile_number,
+                    "country": country,
+                    "requirements": winner.requirements,
+                    "requirement_score": round(score, 2) 
                 })
 
             return jsonify({
                 'message': 'Winners selected and notified!',
-                'winners': winners_data
+                'winners': response_data
             }), 200
             
         except Exception as e:

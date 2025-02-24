@@ -2,6 +2,7 @@ from app import db
 from datetime import datetime
 import random
 from sqlalchemy.orm import validates
+from app.services.ai_service import AIService
 
 class Registration(db.Model):
     __tablename__ = 'registrations'
@@ -20,6 +21,12 @@ class Registration(db.Model):
     registration_date = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships
+
+    COUNTRY_MAPPING = {
+        '+44': 'UK',
+        '+1': 'US',
+        '+91': 'India'
+    }
 
     def __repr__(self):
         return f'<Registration {self.name}>'
@@ -41,7 +48,28 @@ class Registration(db.Model):
 
     @classmethod
     def select_winners(cls, count=3):
-        all_users = cls.query.all()
-        if len(all_users) < count:
-            return all_users
-        return random.sample(all_users, count)
+        uk_candidates = cls.query.filter_by(country_code='+44').all()
+        us_candidates = cls.query.filter_by(country_code='+1').all()
+        india_candidates = cls.query.filter_by(country_code='+91').all()
+
+        if not uk_candidates or not us_candidates or not india_candidates:
+            return None
+
+        candidates_by_country = {
+            'UK': [(candidate, AIService.evaluate_requirements(candidate.requirements)) 
+                  for candidate in uk_candidates],
+            'US': [(candidate, AIService.evaluate_requirements(candidate.requirements))
+                  for candidate in us_candidates],
+            'India': [(candidate, AIService.evaluate_requirements(candidate.requirements))
+                     for candidate in india_candidates]
+        }
+
+        winners_with_scores = []
+        for country, candidates in candidates_by_country.items():
+            if candidates:
+                sorted_candidates = sorted(candidates, key=lambda x: x[1], reverse=True)
+                winners_with_scores.append((sorted_candidates[0][0], sorted_candidates[0][1], country))  
+
+        winners_with_scores.sort(key=lambda x: x[1], reverse=True)
+        
+        return winners_with_scores if len(winners_with_scores) == 3 else None
