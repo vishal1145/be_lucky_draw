@@ -32,7 +32,7 @@ def verify_registration():
 def get_users():
     return RegistrationController.get_all_users()
 
-@main_bp.route('/api/select-winners', methods=['POST'])
+@main_bp.route('/api/select-winners', methods=['GET'])
 def select_winners():
     return RegistrationController.select_winners()
 
