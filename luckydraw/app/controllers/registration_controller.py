@@ -231,6 +231,8 @@ class RegistrationController:
                     "email": winner.email,
                     "phone": winner.mobile_number,
                     "country": country,
+                    "image":winner.image_url,
+                    "technologies":winner.technologies,
                     "requirements": winner.requirements,
                     "requirement_score": round(score, 2) 
                 })
