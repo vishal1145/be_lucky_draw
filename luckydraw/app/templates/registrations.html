@@ -240,7 +240,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <!-- <th>#</th> -->
                         <th>User</th>
                         <th>Technologies</th>
                         <th>Country</th>
@@ -252,7 +252,7 @@
                 <tbody>
                     {% for user in users %}
                     <tr>
-                        <td>{{ loop.index + ((page - 1) * per_page) }}</td>
+                        <!-- <td>{{ loop.index + ((page - 1) * per_page) }}</td> -->
                         <td>
                             <div class="d-flex align-items-center">
                                 <img src="{{ user.image_url or '/static/default-avatar.png' }}" class="avatar me-2">
