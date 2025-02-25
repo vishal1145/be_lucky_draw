@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Templates</title>
+    <link rel="stylesheet" href={{url_for('static', filename='css/emails.css' )}}>
+
+</head>
+
+<body class="gradient-bg">
+    <a href="{{ url_for('main.registrations') }}" class="back-button">
+        <span class="back-icon"></span>
+        Back to Registrations
+    </a>
+    <div class="container">
+        <h1 class="page-title">Send Emails</h1>
+
+        <div class="alert alert-success" id="successAlert"></div>
+        <div class="alert alert-error" id="errorAlert"></div>
+
+        <div class="email-actions">
+            <button onclick="sendBulkEmail('welcome')" class="btn btn-primary btn-large">
+                Send Welcome Emails
+            </button>
+            <button onclick="sendBulkEmail('appointment')" class="btn btn-primary btn-large">
+                Send Appointment Emails
+            </button>
+        </div>
+
+        <div class="create-announcement-section">
+            <h2 class="section-title">Create New Announcement</h2>
+            <div class="form-container">
+                <form onsubmit="createAnnouncement(event)" class="announcement-form">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="announcement_date">Announcement Date</label>
+                        <input type="datetime-local" id="announcement_date" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Announcement</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="announcements-section">
+            <h2 class="section-title">Recent Announcements</h2>
+            <div class="table-container">
+                <table class="announcements-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="announcementsTableBody">
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        function showAlert(type, message) {
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+
+            if (type === 'success') {
+                successAlert.textContent = message;
+                successAlert.style.display = 'block';
+                errorAlert.style.display = 'none';
+                setTimeout(() => {
+                    successAlert.style.display = 'none';
+                }, 5000);
+            } else {
+                errorAlert.textContent = message;
+                errorAlert.style.display = 'block';
+                successAlert.style.display = 'none';
+                setTimeout(() => {
+                    errorAlert.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function showLoading(show) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+
+        async function sendBulkEmail(templateType) {
+            if (!confirm(`Are you sure you want to send ${templateType} emails to all verified users?`)) {
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                const response = await fetch(`/send-bulk-email/${templateType}`, {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('success', `Successfully sent ${data.count} emails!`);
+                } else {
+                    showAlert('error', data.error || 'Failed to send emails');
+                }
+            } catch (error) {
+                showAlert('error', 'Error sending emails');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function loadAnnouncements() {
+            try {
+                const response = await fetch('/api/announcement');
+                const data = await response.json();
+
+                const tableBody = document.getElementById('announcementsTableBody');
+
+                if (data.status === 'success' && data.data.length > 0) {
+                    tableBody.innerHTML = data.data.map(announcement => `
+                        <tr>
+                            <td>${announcement.title}</td>
+                            <td>${announcement.description}</td>
+                            <td class="announcement-date">
+                                ${new Date(announcement.announcement_date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })}
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="no-announcements">
+                                No announcements available
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+                document.getElementById('announcementsTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="3" class="no-announcements">
+                            Error loading announcements
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        async function createAnnouncement(event) {
+            event.preventDefault();
+            showLoading(true);
+
+            try {
+                const title = document.getElementById('title').value;
+                const description = document.getElementById('description').value;
+                const announcement_date = document.getElementById('announcement_date').value;
+
+                const response = await fetch('/api/announcement', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        description,
+                        announcement_date
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('success', 'Announcement created successfully!');
+                    // Clear the form
+                    event.target.reset();
+                    // Reload the announcements table
+                    await loadAnnouncements();
+                } else {
+                    showAlert('error', data.message || 'Failed to create announcement');
+                }
+            } catch (error) {
+                console.error('Error creating announcement:', error);
+                showAlert('error', 'Error creating announcement');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Set default date for the announcement_date input
+        document.addEventListener('DOMContentLoaded', () => {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('announcement_date').value = now.toISOString().slice(0, 16);
+
+            // Load announcements
+            loadAnnouncements();
+        });
+    </script>
+</body>
+
+</html>

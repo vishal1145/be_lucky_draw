@@ -1,16 +1,19 @@
 from app.routes import main_bp
-from flask import jsonify, request, send_from_directory, render_template
+from flask import jsonify, request, send_from_directory, render_template, redirect, url_for
 from app.controllers.registration_controller import RegistrationController
 from app.models.announcement import Announcement
+from app.models.registration import Registration
 import os
 from flask import current_app
 from app import db
 from datetime import datetime
 from app.services.announcement_service import AnnouncementService
+from app.services.email_service import mail
+from flask_mail import Message
 
-@main_bp.route('/')
-def index():
-    return jsonify({"message": "Welcome to Lucky Draw API"})
+# @main_bp.route('/')
+# def index():
+#     return jsonify({"message": "Welcome to Lucky Draw API"})
 
 @main_bp.route('/api/register/initiate', methods=['POST'])
 def initiate_register():
@@ -179,6 +182,95 @@ def send_results_notification(announcement_id):
             "message": str(e)
         }), 500
 
+
+USERNAME = "admin@gmail.com"
+PASSWORD = "Algo@987!"
+from flask import make_response, redirect, url_for
+
+@main_bp.route('/', methods=['GET', 'POST'])
+def login():
+    error_message = None
+
+    if request.method == 'POST':
+        email = request.form['email']   
+        password = request.form['password']
+
+        if email == USERNAME and password == PASSWORD:
+            resp = make_response(redirect(url_for('main.registrations')))  
+            resp.set_cookie('user_logged_in', 'true')
+            return resp  
+
+        else:
+            error_message = "Invalid email or password. Please try again."
+
+    return render_template('login.html', error_message=error_message) 
+
+
 @main_bp.route('/registrations')
 def registrations():
-    return RegistrationController.get_registrations_page()
+    if request.cookies.get('user_logged_in') == 'true':
+        
+        return RegistrationController.get_registrations_page()
+
+    return redirect(url_for('main.login'))
+
+@main_bp.route('/email-templates')
+def email_templates():
+    if request.cookies.get('user_logged_in') != 'true':
+        return redirect(url_for('main.login'))
+    return render_template('email_templates.html')
+
+@main_bp.route('/send-bulk-email/<template_type>', methods=['POST'])
+def send_bulk_email(template_type):
+    if request.cookies.get('user_logged_in') != 'true':
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        # Get all verified users
+        users = Registration.query.filter_by(is_verified=True).all()
+        
+        # Get latest announcement for appointment emails
+        latest_announcement = Announcement.query.order_by(Announcement.announcement_date.desc()).first()
+        
+        for user in users:
+            if template_type == 'welcome':
+                msg = Message(
+                    'Welcome to Lucky Draw!',
+                    sender=current_app.config['MAIL_USERNAME'],
+                    recipients=[user.email]
+                )
+                msg.html = render_template('emails/welcome_email.html', 
+                                         name=user.name)
+                
+            elif template_type == 'appointment':
+                if not latest_announcement:
+                    # Create a proper Announcement object for fallback
+                    latest_announcement = Announcement(
+                        title='Sample Announcement',
+                        description='This is a sample announcement',
+                        announcement_date=datetime.now()
+                    )
+                
+                msg = Message(
+                    'Appointment Confirmation',
+                    sender=current_app.config['MAIL_USERNAME'],
+                    recipients=[user.email]
+                )
+                msg.html = render_template('emails/announcement_reminder.html',
+                                         name=user.name,
+                                         announcement=latest_announcement,
+                                         share_url="https://algofolks.com")
+            else:
+                return jsonify({'error': 'Invalid template type'}), 400
+                
+            mail.send(msg)
+            
+        return jsonify({
+            'message': f'Successfully sent {template_type} emails to all verified users',
+            'count': len(users)
+        })
+        
+    except Exception as e:
+        print(f"Error sending emails: {str(e)}")  # Debug print
+        return jsonify({'error': str(e)}), 500
+
