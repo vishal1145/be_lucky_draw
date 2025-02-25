@@ -13,9 +13,9 @@
     .page-title {
         font-size: 32px;
         font-weight: bold;
-        text-align: center;
-        margin-bottom: 30px;
-        color: #333;
+        text-align: left;
+        margin-bottom: 2px;
+        color: #28365f;
     }
 
     .email-card {
@@ -66,6 +66,7 @@
     }
 
     .btn-primary {
+        margin-top: 15px;
         background: linear-gradient(135deg, #28365f 0%, #1e4d92 100%);
         color: white;
     }
@@ -97,8 +98,8 @@
     .email-actions {
         display: flex;
         gap: 20px;
-        justify-content: center;
-        margin-top: 40px;
+        justify-content: left;
+
     }
 
     .btn-large {
@@ -147,7 +148,7 @@
         font-size: 24px;
         color: #28365f;
         margin-bottom: 20px;
-        text-align: center;
+        text-align: left;
     }
 
     .table-container {
@@ -341,7 +342,7 @@
         }
     }
 
-    /* Dark mode support */
+    /* light mode support */
     @media (prefers-color-scheme: light) {
         .gradient-bg {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);

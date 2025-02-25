@@ -220,6 +220,13 @@ def email_templates():
         return redirect(url_for('main.login'))
     return render_template('email_templates.html')
 
+@main_bp.route('/logout')
+def logout():
+    resp = make_response(redirect(url_for('main.login')))  
+    resp.set_cookie('user_logged_in', '', expires=0)  # Clear the cookie
+    return resp
+
+
 @main_bp.route('/send-bulk-email/<template_type>', methods=['POST'])
 def send_bulk_email(template_type):
     if request.cookies.get('user_logged_in') != 'true':
@@ -229,28 +236,24 @@ def send_bulk_email(template_type):
         # Get all verified users
         users = Registration.query.filter_by(is_verified=True).all()
         
-        # Get latest announcement for appointment emails
+        # Get latest announcement for emails
         latest_announcement = Announcement.query.order_by(Announcement.announcement_date.desc()).first()
         
+        if not latest_announcement:
+            return jsonify({'error': 'No announcements found'}), 404
+
         for user in users:
-            if template_type == 'welcome':
+            if template_type == 'results':
                 msg = Message(
-                    'Welcome to Lucky Draw!',
+                    'Lucky Draw Results Available!',
                     sender=current_app.config['MAIL_USERNAME'],
                     recipients=[user.email]
                 )
-                msg.html = render_template('emails/welcome_email.html', 
-                                         name=user.name)
+                msg.html = render_template('emails/results_notification.html',
+                                         name=user.name,
+                                         announcement=latest_announcement)
                 
             elif template_type == 'appointment':
-                if not latest_announcement:
-                    # Create a proper Announcement object for fallback
-                    latest_announcement = Announcement(
-                        title='Sample Announcement',
-                        description='This is a sample announcement',
-                        announcement_date=datetime.now()
-                    )
-                
                 msg = Message(
                     'Appointment Confirmation',
                     sender=current_app.config['MAIL_USERNAME'],

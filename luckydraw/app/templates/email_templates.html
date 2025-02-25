@@ -21,33 +21,12 @@
         <div class="alert alert-error" id="errorAlert"></div>
 
         <div class="email-actions">
-            <button onclick="sendBulkEmail('welcome')" class="btn btn-primary btn-large">
-                Send Welcome Emails
+            <button onclick="sendBulkEmail('results')" class="btn btn-primary btn-large">
+                Send Results Emails
             </button>
             <button onclick="sendBulkEmail('appointment')" class="btn btn-primary btn-large">
                 Send Appointment Emails
             </button>
-        </div>
-
-        <div class="create-announcement-section">
-            <h2 class="section-title">Create New Announcement</h2>
-            <div class="form-container">
-                <form onsubmit="createAnnouncement(event)" class="announcement-form">
-                    <div class="form-group">
-                        <label for="title">Title</label>
-                        <input type="text" id="title" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description</label>
-                        <textarea id="description" class="form-control" rows="3" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="announcement_date">Announcement Date</label>
-                        <input type="datetime-local" id="announcement_date" class="form-control" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Create Announcement</button>
-                </form>
-            </div>
         </div>
 
         <div class="announcements-section">
@@ -65,6 +44,33 @@
                         <!-- Will be populated by JavaScript -->
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <button onclick="toggleAnnouncementForm()" class="btn btn-primary" id="showFormBtn">
+            Create New Announcement
+        </button>
+        <div class="create-announcement-section" id="announcementForm" style="display: none;">
+            <h2 class="section-title">Create New Announcement</h2>
+            <div class="form-container">
+                <form onsubmit="createAnnouncement(event)" class="announcement-form">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="announcement_date">Announcement Date</label>
+                        <input type="datetime-local" id="announcement_date" class="form-control" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="button" onclick="toggleAnnouncementForm()"
+                            class="btn btn-secondary">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -105,11 +111,17 @@
                 return;
             }
 
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.disabled = true;
             showLoading(true);
 
             try {
                 const response = await fetch(`/send-bulk-email/${templateType}`, {
-                    method: 'POST'
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 });
 
                 const data = await response.json();
@@ -122,6 +134,8 @@
             } catch (error) {
                 showAlert('error', 'Error sending emails');
             } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
                 showLoading(false);
             }
         }
@@ -170,6 +184,20 @@
             }
         }
 
+        function toggleAnnouncementForm() {
+            const form = document.getElementById('announcementForm');
+            const button = document.getElementById('showFormBtn');
+
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+                button.style.display = 'none';
+            } else {
+                form.style.display = 'none';
+                button.style.display = 'block';
+                document.querySelector('.announcement-form').reset();
+            }
+        }
+
         async function createAnnouncement(event) {
             event.preventDefault();
             showLoading(true);
@@ -195,9 +223,8 @@
 
                 if (response.ok) {
                     showAlert('success', 'Announcement created successfully!');
-                    // Clear the form
                     event.target.reset();
-                    // Reload the announcements table
+                    toggleAnnouncementForm();
                     await loadAnnouncements();
                 } else {
                     showAlert('error', data.message || 'Failed to create announcement');
@@ -210,13 +237,11 @@
             }
         }
 
-        // Set default date for the announcement_date input
         document.addEventListener('DOMContentLoaded', () => {
             const now = new Date();
             now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
             document.getElementById('announcement_date').value = now.toISOString().slice(0, 16);
 
-            // Load announcements
             loadAnnouncements();
         });
     </script>
