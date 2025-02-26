@@ -226,54 +226,82 @@ def logout():
     resp.set_cookie('user_logged_in', '', expires=0)  # Clear the cookie
     return resp
 
-
 @main_bp.route('/send-bulk-email/<template_type>', methods=['POST'])
 def send_bulk_email(template_type):
     if request.cookies.get('user_logged_in') != 'true':
         return jsonify({'error': 'Unauthorized'}), 401
     
     try:
-        # Get all verified users
         users = Registration.query.filter_by(is_verified=True).all()
-        
-        # Get latest announcement for emails
         latest_announcement = Announcement.query.order_by(Announcement.announcement_date.desc()).first()
         
         if not latest_announcement:
             return jsonify({'error': 'No announcements found'}), 404
 
+        successful_sends = 0
+        already_sent = 0
+        failed_sends = 0
+
         for user in users:
+            # Determine the appropriate email tracking field
             if template_type == 'results':
-                msg = Message(
-                    'Lucky Draw Results Available!',
-                    sender=current_app.config['MAIL_USERNAME'],
-                    recipients=[user.email]
-                )
-                msg.html = render_template('emails/results_notification.html',
-                                         name=user.name,
-                                         announcement=latest_announcement)
-                
+                last_emailed_field = 'last_results_emailed'
             elif template_type == 'appointment':
-                msg = Message(
-                    'Appointment Confirmation',
-                    sender=current_app.config['MAIL_USERNAME'],
-                    recipients=[user.email]
-                )
-                msg.html = render_template('emails/announcement_reminder.html',
-                                         name=user.name,
-                                         announcement=latest_announcement,
-                                         share_url="https://algofolks.com")
+                last_emailed_field = 'last_appointment_emailed'
             else:
                 return jsonify({'error': 'Invalid template type'}), 400
+
+            # Check if the user has already received this type of email
+            last_emailed_value = getattr(user, last_emailed_field)
+            if last_emailed_value and last_emailed_value >= latest_announcement.announcement_date:
+                already_sent += 1
+                continue
+
+            try:
+                if template_type == 'results':
+                    msg = Message(
+                        'Lucky Draw Results Available!',
+                        sender=current_app.config['MAIL_USERNAME'],
+                        recipients=[user.email]
+                    )
+                    msg.html = render_template('emails/results_notification.html',
+                                               name=user.name,
+                                               announcement=latest_announcement)
+                    
+                elif template_type == 'appointment':
+                    msg = Message(
+                        'Appointment Confirmation',
+                        sender=current_app.config['MAIL_USERNAME'],
+                        recipients=[user.email]
+                    )
+                    msg.html = render_template('emails/announcement_reminder.html',
+                                               name=user.name,
+                                               announcement=latest_announcement,
+                                               share_url="https://algofolks.com")
+
+                mail.send(msg)
                 
-            mail.send(msg)
+                # Update the correct email timestamp field
+                setattr(user, last_emailed_field, datetime.utcnow())
+                db.session.commit()
+                
+                successful_sends += 1
+
+            except Exception as e:
+                failed_sends += 1
+                print(f"Failed to send email to {user.email}: {str(e)}")
+                continue
             
         return jsonify({
-            'message': f'Successfully sent {template_type} emails to all verified users',
-            'count': len(users)
+            'message': 'Email sending completed',
+            'stats': {
+                'successful': successful_sends,
+                'already_sent': already_sent,
+                'failed': failed_sends,
+                'total_processed': len(users)
+            }
         })
         
     except Exception as e:
-        print(f"Error sending emails: {str(e)}")  # Debug print
+        print(f"Error in bulk email process: {str(e)}")
         return jsonify({'error': str(e)}), 500
-

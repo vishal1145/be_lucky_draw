@@ -127,7 +127,15 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    showAlert('success', `Successfully sent ${data.count} emails!`);
+                    const stats = data.stats;
+                    const message = `
+                        Email Sending Complete:
+                        ✓ ${stats.successful} emails sent successfully
+                        ℹ ${stats.already_sent} duplicate emails skipped
+                        ✕ ${stats.failed} failed to send
+                        Total processed: ${stats.total_processed}
+                    `;
+                    showAlert('success', message);
                 } else {
                     showAlert('error', data.error || 'Failed to send emails');
                 }

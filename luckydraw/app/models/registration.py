@@ -19,7 +19,8 @@ class Registration(db.Model):
     is_verified = db.Column(db.Boolean, default=True)
     is_active = db.Column(db.Boolean, default=True)
     registration_date = db.Column(db.DateTime, default=datetime.utcnow)
-    
+    last_results_emailed = db.Column(db.DateTime, nullable=True)  # Tracks "results" email
+    last_appointment_emailed = db.Column(db.DateTime, nullable=True)  # Tracks "appointment" email
     # Relationships
 
     COUNTRY_MAPPING = {

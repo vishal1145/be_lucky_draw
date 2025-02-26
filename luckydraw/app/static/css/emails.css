@@ -54,6 +54,8 @@
         border: 1px solid #ddd;
         border-radius: 4px;
         box-sizing: border-box;
+        background: white;
+        color: #333;
     }
 
     .btn {
@@ -99,7 +101,6 @@
         display: flex;
         gap: 20px;
         justify-content: left;
-
     }
 
     .btn-large {
@@ -339,69 +340,5 @@
         .announcements-table td {
             padding: 8px;
             font-size: 13px;
-        }
-    }
-
-    /* light mode support */
-    @media (prefers-color-scheme: light) {
-        .gradient-bg {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        }
-
-        .container,
-        .form-container,
-        .table-container {
-            background: #242424;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .page-title,
-        .section-title {
-            color: #fff;
-        }
-
-        .form-group label {
-            color: #e0e0e0;
-        }
-
-        .form-control {
-            background: #333;
-            border-color: #444;
-            color: #fff;
-        }
-
-        .announcements-table th {
-            background-color: #333;
-            color: #fff;
-        }
-
-        .announcements-table td {
-            color: #e0e0e0;
-        }
-
-        .announcements-table tr:hover {
-            background-color: #2a2a2a;
-        }
-
-        .back-button {
-            background: #333;
-            color: #fff;
-            border-color: #444;
-        }
-
-        .back-button:hover {
-            background: #444;
-        }
-
-        .alert-success {
-            background-color: #1e4620;
-            color: #98cf9a;
-            border-color: #2a5a2a;
-        }
-
-        .alert-error {
-            background-color: #442424;
-            border-color: #662424;
-            color: #ff9999;
         }
     }
