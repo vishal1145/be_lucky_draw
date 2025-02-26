@@ -253,7 +253,7 @@ def send_bulk_email(template_type):
 
             # Check if the user has already received this type of email
             last_emailed_value = getattr(user, last_emailed_field)
-            if last_emailed_value and last_emailed_value >= latest_announcement.announcement_date:
+            if last_emailed_value and last_emailed_value < latest_announcement.announcement_date:
                 already_sent += 1
                 continue
 
