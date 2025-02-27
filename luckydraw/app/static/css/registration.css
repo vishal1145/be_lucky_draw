@@ -1,7 +1,7 @@
         .stats-card {
             padding: 20px;
             border-radius: 12px;
-            margin: 10px;
+            /* margin: 10px; */
             background: rgba(255, 255, 255, 0.9);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -51,20 +51,6 @@
         }
 
 
-
-        .country-dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: white;
-            min-width: 160px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-            max-height: 300px;
-            overflow-y: auto;
-            border-radius: 4px;
-            padding: 8px 0;
-        }
-
         .textUser {
             border: none;
             padding: 8px 16px;
@@ -86,33 +72,6 @@
             margin-bottom: 2rem;
         }
 
-
-        .country-option {
-            padding: 8px 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .country-option:hover {
-            background-color: #f5f5f5;
-        }
-
-        .country-code {
-            color: #666;
-            margin-left: auto;
-            font-size: 12px;
-        }
-
-        .country-flag {
-            width: 20px;
-            height: 15px;
-            border-radius: 2px;
-            object-fit: cover;
-        }
 
         .search-box {
             padding: 8px;
@@ -145,25 +104,13 @@
             color: white;
         }
 
-        /* .status-badge {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            align-items: center;
-        } */
 
         .status-badge {
-            padding: 5px 10px;
             border-radius: 15px;
             font-size: 12px;
             display: inline-flex;
-            /* Aligns text properly */
             justify-content: center;
-            /* Centers content */
             align-items: center;
-            /* Aligns text vertically */
-            min-width: 80px;
-            /* Ensures consistent badge width */
         }
 
         .status-verified {
@@ -232,66 +179,89 @@
         .table td {
             border-color: #dee2e6;
         }
+.country-dropdown {
+    position: relative;
+    min-width: 250px;
+    /* Allow expansion */
+    font-family: Arial, sans-serif;
+}
 
+.selected-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    min-width: 250px;
+    max-width: 100%;
+}
 
-        .country-dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 220px;
-            max-height: 200px;
-            overflow-y: auto;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
+.selected-option span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80%;
+}
 
-        .country-option {
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-        }
+.selected-option .arrow {
+    font-size: 14px;
+    flex-shrink: 0;
+}
 
-        .country-option:hover {
-            background-color: #f0f0f0;
-        }
+/* Dropdown is hidden by default */
+.dropdown-list {
+    position: absolute;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    /* Show some records with scroll */
+    overflow-y: auto;
+    display: none;
+    /* Hidden initially */
+    z-index: 1000;
+    border-radius: 4px;
+}
 
-        .country-option span {
-            margin-right: 8px;
-        }
+/* Show dropdown when .show class is added */
+.dropdown-list.show {
+    display: block;
+}
 
-        .country-dropdown {
-            position: relative;
-            display: inline-block;
-        }
+/* Each dropdown option */
+.dropdown-list li {
+    padding: 10px;
+    cursor: pointer;
+}
 
-        .country-select {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            background-color: white;
-            width: 250px;
-            max-height: 300px;
-            cursor: pointer;
-        }
+.dropdown-list li:hover {
+    background-color: #f1f1f1;
+}
 
-        /* Style for the select element to show only 10 items */
-        select[size] {
-            height: auto;
-            max-height: 300px;
-            overflow-y: auto;
-        }
+/* Scrollbar customization */
+.dropdown-list::-webkit-scrollbar {
+    width: 6px;
+}
 
-        select[size] option {
-            padding: 8px 12px;
-        }
+.dropdown-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
 
-        select[size] option:hover {
-            background-color: #f0f0f0;
-        }
+.dropdown-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
 
+.dropdown-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
         /* Responsive styles */
         @media screen and (max-width: 1200px) {
             .container {
