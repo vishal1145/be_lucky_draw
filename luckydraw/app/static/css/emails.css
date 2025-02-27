@@ -73,6 +73,16 @@
         color: white;
     }
 
+    .btn-secondary {
+        background: linear-gradient(135deg, #b22222 0%, #8b0000 100%) !important;
+        color: white !important;
+    }
+
+    .btn-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(30, 77, 146, 0.2);
+    }
+
     .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(30, 77, 146, 0.2);

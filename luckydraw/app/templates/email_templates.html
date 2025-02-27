@@ -11,9 +11,15 @@
 
 <body class="gradient-bg">
     <a href="{{ url_for('main.registrations') }}" class="back-button">
-        <span class="back-icon"></span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 384 512" fill="currentColor">
+            <path
+                d="M377 81.7c7.9 15.8 1.5 35-14.3 42.9L103.5 256l262.8 131.4c15.8 7.9 22.2 27.1 14.3 42.9s-27.1 22.2-42.9 14.3l-320-160C6.8 278.8 0 267.7 0 255.6s6.8-23.2 17.7-28.6l320-160c15.8-7.9 35-1.5 42.9 14.3z" />
+        </svg>
         Back to Registrations
     </a>
+
+
+
     <div class="container">
         <h1 class="page-title">Send Emails</h1>
 
@@ -24,8 +30,8 @@
             <button onclick="sendBulkEmail('results')" class="btn btn-primary btn-large">
                 Send Results Emails
             </button>
-            <button onclick="sendBulkEmail('appointment')" class="btn btn-primary btn-large">
-                Send Appointment Emails
+            <button onclick="sendBulkEmail('announcement')" class="btn btn-primary btn-large">
+                Send Announcement Emails
             </button>
         </div>
 
@@ -252,6 +258,24 @@
 
             loadAnnouncements();
         });
+
+        document.addEventListener('DOMContentLoaded', () => {
+                const now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+                const announcementDateInput = document.getElementById('announcement_date');
+                announcementDateInput.min = now.toISOString().slice(0, 16); // Set minimum date to current date-time
+
+                announcementDateInput.addEventListener('input', function () {
+                    if (this.value < this.min) {
+                        alert('You cannot select a past date!');
+                        this.value = this.min; // Reset value to min
+                    }
+                });
+
+                loadAnnouncements();
+            });
+
     </script>
 </body>
 

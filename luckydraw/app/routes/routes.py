@@ -246,14 +246,14 @@ def send_bulk_email(template_type):
             # Determine the appropriate email tracking field
             if template_type == 'results':
                 last_emailed_field = 'last_results_emailed'
-            elif template_type == 'appointment':
+            elif template_type == 'announcement':
                 last_emailed_field = 'last_appointment_emailed'
             else:
                 return jsonify({'error': 'Invalid template type'}), 400
 
             # Check if the user has already received this type of email
             last_emailed_value = getattr(user, last_emailed_field)
-            if last_emailed_value and last_emailed_value < latest_announcement.announcement_date:
+            if last_emailed_value and last_emailed_value <= latest_announcement.announcement_date:
                 already_sent += 1
                 continue
 
@@ -270,7 +270,7 @@ def send_bulk_email(template_type):
                     
                 elif template_type == 'appointment':
                     msg = Message(
-                        'Appointment Confirmation',
+                        'Upcoming Announcement',
                         sender=current_app.config['MAIL_USERNAME'],
                         recipients=[user.email]
                     )

@@ -194,7 +194,7 @@ class RegistrationController:
     def get_all_users():
         try:
             users = Registration.query.all()
-            user_count = Registration.query.count()
+            user_count = f"{Registration.query.count():02d}"
             users_list = [user.to_dict() for user in users]
             return jsonify({"users": users_list, "no_of_users": user_count}), 200
         except Exception as e:
@@ -344,9 +344,10 @@ class RegistrationController:
             users = pagination.items
 
             # Get filtered counts
-            total_registrations = query.count()
-            verified_count = query.filter_by(is_verified=True).count()
-            countries_count = db.session.query(Registration.country_code).distinct().count()
+            total_registrations = f"{query.count():02d}"
+
+            verified_count = f"{query.filter_by(is_verified=True).count():02d}"
+            countries_count = f"{db.session.query(Registration.country_code).distinct().count():02d}"
 
             return render_template('registrations.html',
                 users=users,

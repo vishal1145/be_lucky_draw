@@ -49,19 +49,26 @@
                         <td style="padding: 15px;">
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
-                                    <td width="24" style="padding-right: 15px;">
+                                    <td width="24" style="padding-right: 15px; vertical-align: middle;">
                                         <img src="https://lucky-draw.algofolks.com/static/images/emails/checklist.png"
-                                            alt="Results" style="width: 24px; height: 24px;">
+                                            alt="Results" style="width: 24px; height: 24px; display: block;">
                                     </td>
+                                    <td style="vertical-align: middle;">
+                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0;">Announcement Details
+                                        </h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
                                     <td>
-                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0 0 8px 0;">Announcement
-                                            Details</h3>
                                         <p style="margin: 0; color: #666;">{{ announcement.title }}</p>
                                         <p style="margin: 5px 0; color: #666;">Published: {{
-                                            announcement.announcement_date.strftime('%d %B %Y') }}</p>
+                                            announcement.announcement_date.strftime('%d %B %Y') }}
+                                        </p>
                                     </td>
                                 </tr>
                             </table>
+
                         </td>
                     </tr>
                 </table>
@@ -73,13 +80,17 @@
                         <td style="padding: 15px;">
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
-                                    <td width="24" style="padding-right: 15px;">
+                                    <td width="24" style="padding-right: 15px; vertical-align: middle;">
                                         <img src="https://lucky-draw.algofolks.com/static/images/emails/bell.png"
-                                            alt="Check" style="width: 24px; height: 24px;">
+                                            alt="Check" style="width: 24px; height: 24px; display: block;">
                                     </td>
+                                    <td style="vertical-align: middle;">
+                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0;">Check Your Results</h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
                                     <td>
-                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0 0 8px 0;">Check Your
-                                            Results</h3>
                                         <p style="margin: 0; color: #666;">Log into your account to view the complete
                                             results and see if you're one of our lucky winners!</p>
                                     </td>
@@ -89,14 +100,15 @@
                     </tr>
                 </table>
 
+
                 <!-- Signature -->
                 <p style="text-align: center; margin: 30px 0;">Thank you for participating! 🎊</p>
 
                 <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
                     <tr>
                         <td style="text-align: center;">
-                            <img src="https://lucky-draw.algofolks.com/static/images/emails/algofolks-logo.png" alt="Algofolks"
-                                style="height: 25px; vertical-align: middle; margin-right: 5px;">
+                            <img src="https://lucky-draw.algofolks.com/static/images/emails/algofolks-logo.png"
+                                alt="Algofolks" style="height: 25px; vertical-align: middle; margin-right: 5px;">
                             <span style="vertical-align: middle;">Algofolks Team</span>
                         </td>
                     </tr>

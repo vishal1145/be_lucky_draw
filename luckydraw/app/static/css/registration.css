@@ -19,6 +19,23 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+        .back-button {
+            color: blue;
+            /* Change this to your preferred blue */
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            /* Adds spacing between the icon and text */
+        }
+
+        .back-button svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            /* Makes the icon inherit the text color */
+        }
+
         .avatar {
             width: 40px;
             height: 40px;
@@ -27,24 +44,13 @@
         }
 
         .filter-tabs {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
 
-        .country-dropdown {
-            position: relative;
-            display: inline-block;
-        }
 
-        .country-button {
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            background: white;
-            border-radius: 4px;
-            cursor: pointer;
-            min-width: 120px;
-            text-align: left;
-            color: #333;
-        }
 
         .country-dropdown-content {
             display: none;
@@ -59,13 +65,27 @@
             padding: 8px 0;
         }
 
-        .navbar {
-            background: linear-gradient(135deg, #28365f 0%, #1e4d92 100%);
+        .textUser {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-right: 10px;
+            background: transparent;
+            font-size: x-large;
+            font-weight: bold;
+
+
+            color: #28365f;
         }
 
-        .country-dropdown-content.show {
-            display: block;
+        .navbar {
+            background: linear-gradient(135deg, #28365f 0%, #1e4d92 100%);
+            padding-top: 0;
+            padding-bottom: 0;
+            min-height: 60px;
+            margin-bottom: 2rem;
         }
+
 
         .country-option {
             padding: 8px 16px;
@@ -116,6 +136,7 @@
             border-radius: 20px;
             margin-right: 10px;
             background: transparent;
+            font-size: x-large;
             color: #28365f;
         }
 
@@ -124,10 +145,25 @@
             color: white;
         }
 
+        /* .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            align-items: center;
+        } */
+
         .status-badge {
             padding: 5px 10px;
             border-radius: 15px;
             font-size: 12px;
+            display: inline-flex;
+            /* Aligns text properly */
+            justify-content: center;
+            /* Centers content */
+            align-items: center;
+            /* Aligns text vertically */
+            min-width: 80px;
+            /* Ensures consistent badge width */
         }
 
         .status-verified {
@@ -197,6 +233,65 @@
             border-color: #dee2e6;
         }
 
+
+        .country-dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 220px;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .country-option {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .country-option:hover {
+            background-color: #f0f0f0;
+        }
+
+        .country-option span {
+            margin-right: 8px;
+        }
+
+        .country-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .country-select {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background-color: white;
+            width: 250px;
+            max-height: 300px;
+            cursor: pointer;
+        }
+
+        /* Style for the select element to show only 10 items */
+        select[size] {
+            height: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        select[size] option {
+            padding: 8px 12px;
+        }
+
+        select[size] option:hover {
+            background-color: #f0f0f0;
+        }
+
         /* Responsive styles */
         @media screen and (max-width: 1200px) {
             .container {
@@ -206,7 +301,7 @@
 
         @media screen and (max-width: 992px) {
             .container {
-                max-width: 720px;
+                width: 100%;
             }
 
             .stats-card {
@@ -224,9 +319,9 @@
         }
 
         @media screen and (max-width: 768px) {
-            .gradient-bg {
+            /* .gradient-bg {
                 padding: 15px;
-            }
+            } */
 
             .container {
                 padding: 10px;

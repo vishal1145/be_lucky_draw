@@ -17,12 +17,11 @@
             <a class="navbar-brand d-flex align-items-center me-3" href="#">
                 <img src="{{ url_for('static', filename='images/emails/algofolks-logo.png') }}" alt="Logo" width="50"
                     height="50">
-                <span class="ms-2 fs-4 fw-bold text-light">Users</span> 
             </a>
 
             <div class="ms-auto me-3">
                 <a href="{{ url_for('main.email_templates') }}" class="btn btn-light">
-                    Emails
+                    Send Emails
                 </a>
             </div>
 
@@ -32,7 +31,7 @@
 
 
     <div class="container">
-       
+
         <div class="row mb-4">
             <div class="col-md-4">
                 <div class="stats-card">
@@ -48,14 +47,17 @@
             </div>
             <div class="col-md-4">
                 <div class="stats-card">
+
                     <div class="stats-value">{{ countries_count }}</div>
                     <div class="stats-label">Countries</div>
                 </div>
             </div>
-          
+
         </div>
 
-        <div class="filter-tabs">
+        <!-- <div class="filter-tabs">
+            <span class="textUser">Users</span>
+
             <div class="country-dropdown">
                 <button onclick="toggleDropdown()" class="country-button">
                     {% if selected_country %}
@@ -63,12 +65,12 @@
                     <span class="fi fi-{{ country.code }}"></span>
                     <span id="selectedCountry" class="ms-2">{{ country.name }}</span>
                     {% else %}
-                    <span id="selectedCountry">All Countries</span>
+                    <span id="selectedCountry">Select Country</span>
                     {% endif %}
                     <i class="fas fa-chevron-down ms-2"></i>
                 </button>
+
                 <div id="countryDropdown" class="country-dropdown-content">
-                 
                     <div class="country-option" onclick="filterByCountry('all')">
                         All Countries
                     </div>
@@ -82,7 +84,27 @@
                     {% endfor %}
                 </div>
             </div>
+
+        </div> -->
+
+        <div class="filter-tabs">
+            <span class="textUser">Users</span>
+
+        <div class="country-dropdown">
+            <select id="countrySelect" class="country-select" onchange="filterByCountry(this.value)">
+                <option value="all">All Countries</option>
+                {% for code, country in country_codes.items() %}
+                <option value="{{ code }}" data-flag="{{ country.code }}" {% if selected_country==code %}selected{% endif %}>
+                    {{ country.name }} ({{ code }})
+                </option>
+                {% endfor %}
+            </select>
         </div>
+
+        </div>
+
+
+
 
         <!-- Table -->
         <div class="table-container table-scroll-container">
@@ -135,7 +157,7 @@
                                 {{ 'Verified' if user.is_verified else 'Pending' }}
                             </span>
                         </td>
-                       
+
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -200,6 +222,18 @@
             }
         }
 
+        // function filterByCountry(country) {
+        //     const currentUrl = new URL(window.location.href);
+        //     currentUrl.searchParams.set('page', '1');
+
+        //     if (country === 'all') {
+        //         currentUrl.searchParams.delete('country');
+        //     } else {
+        //         currentUrl.searchParams.set('country', country);
+        //     }
+        //     window.location.href = currentUrl.toString();
+        // }
+
         function filterByCountry(country) {
             const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('page', '1');
@@ -211,6 +245,15 @@
             }
             window.location.href = currentUrl.toString();
         }
+        // function expandDropdown() {
+        //     document.getElementById("countrySelect").size = 10;
+        // }
+
+        // function collapseDropdown() {
+        //     document.getElementById("countrySelect").size = 1;
+        // }
+
+
     </script>
 </body>
 
