@@ -317,38 +317,55 @@
         }
     }
 
-    @media screen and (max-width: 480px) {
-        .gradient-bg {
-            padding: 10px;
-        }
-
-        .page-title {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 20px;
-        }
-
-        .form-group label {
-            font-size: 14px;
-        }
-
-        .form-control {
-            padding: 8px;
-            font-size: 14px;
-        }
-
-        .announcements-table {
-            display: block;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .announcements-table th,
-        .announcements-table td {
-            padding: 8px;
-            font-size: 13px;
-        }
+@media screen and (max-width: 480px) {
+    .gradient-bg {
+        padding: 10px;
     }
+
+    .page-title {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 20px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .form-control {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .announcements-table {
+        display: block;
+        width: 100%;
+    }
+
+    .announcements-table thead {
+        display: none;
+        /* Hide table headers on small screens */
+    }
+
+    .announcements-table tbody,
+    .announcements-table tr {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .announcements-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .announcements-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+    }
+}
