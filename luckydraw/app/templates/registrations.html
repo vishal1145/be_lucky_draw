@@ -193,9 +193,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
     <script>
-
-
-        // Get the selected country from the URL when the page loads
         document.addEventListener("DOMContentLoaded", function () {
             const currentUrl = new URL(window.location.href);
             const selectedCountry = currentUrl.searchParams.get('country');
@@ -204,20 +201,28 @@
             if (selectedCountry) {
                 const selectedOption = document.querySelector(`[data-code="${selectedCountry}"]`);
                 if (selectedOption) {
-                    selectedText.innerText = selectedOption.innerText;
+                    selectedText.textContent = selectedOption.textContent;
                 }
             } else {
-                selectedText.innerText = "All Countries"; // Default text if no country is selected
+                selectedText.textContent = "All Countries"; // Default text if no country is selected
             }
         });
 
         function toggleDropdown() {
-            document.getElementById("dropdownList").classList.toggle("show");
+            const dropdown = document.getElementById("dropdownList");
+            dropdown.classList.toggle("show");
+
+            const button = document.getElementById("selectedText");
+            const isExpanded = dropdown.classList.contains("show");
+            button.setAttribute("aria-expanded", isExpanded);
         }
 
         function selectCountry(code, name) {
-            document.getElementById("selectedText").innerText = name; // Immediately update UI
+            const selectedText = document.getElementById("selectedText");
+            selectedText.textContent = name; // Preserve styles
+
             document.getElementById("dropdownList").classList.remove("show");
+            selectedText.setAttribute("aria-expanded", "false");
 
             const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('page', '1');
@@ -236,9 +241,11 @@
             const dropdown = document.querySelector(".country-dropdown");
             if (!dropdown.contains(event.target)) {
                 document.getElementById("dropdownList").classList.remove("show");
+                document.getElementById("selectedText").setAttribute("aria-expanded", "false");
             }
         });
     </script>
+
 </body>
 
 </html>
