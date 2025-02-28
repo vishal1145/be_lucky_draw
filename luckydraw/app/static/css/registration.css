@@ -133,6 +133,7 @@
 
         .pagination {
             margin-top: 20px;
+            gap: 10px;
         }
 
         .pagination .page-link {
@@ -179,89 +180,91 @@
         .table td {
             border-color: #dee2e6;
         }
-.country-dropdown {
-    position: relative;
-    min-width: 250px;
-    /* Allow expansion */
-    font-family: Arial, sans-serif;
-}
 
-.selected-option {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    min-width: 250px;
-    max-width: 100%;
-}
+        .country-dropdown {
+            position: relative;
+            min-width: 250px;
+            /* Allow expansion */
+            font-family: Arial, sans-serif;
+        }
 
-.selected-option span {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 80%;
-}
+        .selected-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            min-width: 250px;
+            max-width: 100%;
+        }
 
-.selected-option .arrow {
-    font-size: 14px;
-    flex-shrink: 0;
-}
+        .selected-option span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 80%;
+        }
 
-/* Dropdown is hidden by default */
-.dropdown-list {
-    position: absolute;
-    width: 100%;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 200px;
-    /* Show some records with scroll */
-    overflow-y: auto;
-    display: none;
-    /* Hidden initially */
-    z-index: 1000;
-    border-radius: 4px;
-}
+        .selected-option .arrow {
+            font-size: 14px;
+            flex-shrink: 0;
+        }
 
-/* Show dropdown when .show class is added */
-.dropdown-list.show {
-    display: block;
-}
+        /* Dropdown is hidden by default */
+        .dropdown-list {
+            position: absolute;
+            width: 100%;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 200px;
+            /* Show some records with scroll */
+            overflow-y: auto;
+            display: none;
+            /* Hidden initially */
+            z-index: 1000;
+            border-radius: 4px;
+        }
 
-/* Each dropdown option */
-.dropdown-list li {
-    padding: 10px;
-    cursor: pointer;
-}
+        /* Show dropdown when .show class is added */
+        .dropdown-list.show {
+            display: block;
+        }
 
-.dropdown-list li:hover {
-    background-color: #f1f1f1;
-}
+        /* Each dropdown option */
+        .dropdown-list li {
+            padding: 10px;
+            cursor: pointer;
+        }
 
-/* Scrollbar customization */
-.dropdown-list::-webkit-scrollbar {
-    width: 6px;
-}
+        .dropdown-list li:hover {
+            background-color: #f1f1f1;
+        }
 
-.dropdown-list::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
+        /* Scrollbar customization */
+        .dropdown-list::-webkit-scrollbar {
+            width: 6px;
+        }
 
-.dropdown-list::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-}
+        .dropdown-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
 
-.dropdown-list::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
+        .dropdown-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .dropdown-list::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
         /* Responsive styles */
         @media screen and (max-width: 1200px) {
             .container {
