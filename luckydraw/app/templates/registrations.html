@@ -89,21 +89,28 @@
 
         <div class="filter-tabs">
             <span class="textUser">Users</span>
-
             <div class="country-dropdown">
                 <div class="selected-option" onclick="toggleDropdown()">
-                    <span id="selectedText">All Countries</span>
+                    <span id="selectedText">
+                        🌍 All Countries
+                    </span>
                     <span class="arrow">▼</span>
                 </div>
                 <ul class="dropdown-list" id="dropdownList">
-                    <li onclick="selectCountry('all', 'All Countries')">All Countries</li>
+                    <li onclick="selectCountry('all', 'All Countries')" data-code="all">
+                        🌍 All Countries
+                    </li>
                     {% for code, country in country_codes.items() %}
-                    <li onclick="selectCountry('{{ code }}', '{{ country.name }} ({{ code }})')" data-code="{{ code }}">
+                    <li onclick="selectCountry('{{ code }}', '{{ country.name }}')" data-code="{{ code }}">
+                        <img src="https://flagcdn.com/w40/{{ country.code|lower }}.png" alt="{{ country.name }} flag"
+                            style="width: 20px; height: 15px; margin-right: 5px;">
                         {{ country.name }} ({{ code }})
                     </li>
                     {% endfor %}
                 </ul>
             </div>
+
+
         </div>
 
 
@@ -143,16 +150,15 @@
                         </td>
                         <td>{{ user.technologies }}</td>
                         <td>
-                            {% if user.country_code == '+91' %}
-                            India
-                            {% elif user.country_code == '+44' %}
-                            UK
-                            {% elif user.country_code == '+1' %}
-                            US
+                            {% if user.country_code in country_codes %}
+                            <!-- <img src="https://flagcdn.com/w40/{{ country_codes[user.country_code]['code'] }}.png"
+        alt="{{ country_codes[user.country_code]['name'] }} flag" style="width: 20px; height: 15px; margin-right: 5px;"> -->
+                            {{ country_codes[user.country_code]['name'] }}
                             {% else %}
                             Unknown
                             {% endif %}
                         </td>
+
                         <td>{{ user.created_at.strftime('%b %d, %I:%M %p') if user.created_at else '' }}</td>
                         <td>
                             <span
@@ -201,10 +207,10 @@
             if (selectedCountry) {
                 const selectedOption = document.querySelector(`[data-code="${selectedCountry}"]`);
                 if (selectedOption) {
-                    selectedText.textContent = selectedOption.textContent;
+                    selectedText.innerHTML = selectedOption.innerHTML;
                 }
             } else {
-                selectedText.textContent = "All Countries"; // Default text if no country is selected
+                selectedText.innerHTML = `🌍 All Countries`;
             }
         });
 
@@ -219,7 +225,11 @@
 
         function selectCountry(code, name) {
             const selectedText = document.getElementById("selectedText");
-            selectedText.textContent = name; // Preserve styles
+            let flagHtml = code !== 'all'
+                ? `<img src="https://flagcdn.com/w40/${code.toLowerCase()}.png" alt="${name} flag" style="width: 20px; height: 15px; margin-right: 5px;">`
+                : `🌍`;
+
+            selectedText.innerHTML = `${flagHtml} ${name}`;
 
             document.getElementById("dropdownList").classList.remove("show");
             selectedText.setAttribute("aria-expanded", "false");
@@ -245,7 +255,6 @@
             }
         });
     </script>
-
 </body>
 
 </html>

@@ -62,11 +62,14 @@
                     <div class="form-group">
                         <label for="title">Title</label>
                         <input type="text" id="title" class="form-control" required>
+                        <small id="titleError" class="error-message"></small>
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>
                         <textarea id="description" class="form-control" rows="3" required></textarea>
+                        <small id="descriptionError" class="error-message"></small>
                     </div>
+
                     <div class="form-group">
                         <label for="announcement_date">Announcement Date</label>
                         <input type="datetime-local" id="announcement_date" class="form-control" required>
@@ -154,49 +157,49 @@
             }
         }
 
-    async function loadAnnouncements() {
-        try {
-            const response = await fetch('/api/announcement');
-            const data = await response.json();
+        async function loadAnnouncements() {
+            try {
+                const response = await fetch('/api/announcement');
+                const data = await response.json();
 
-            const tableBody = document.getElementById('announcementsTableBody');
+                const tableBody = document.getElementById('announcementsTableBody');
 
-            if (data.status === 'success' && data.data.length > 0) {
-                tableBody.innerHTML = data.data.map(announcement => `
+                if (data.status === 'success' && data.data.length > 0) {
+                    tableBody.innerHTML = data.data.map(announcement => `
                 <tr>
                     <td data-label="Title">${announcement.title}</td>
                     <td data-label="Description">${announcement.description}</td>
                     <td data-label="Date" class="announcement-date">
                         ${new Date(announcement.announcement_date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                })}
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })}
                     </td>
                 </tr>
             `).join('');
-            } else {
-                tableBody.innerHTML = `
+                } else {
+                    tableBody.innerHTML = `
                 <tr>
                     <td colspan="3" class="no-announcements">
                         No announcements available
                     </td>
                 </tr>
             `;
-            }
-        } catch (error) {
-            console.error('Error loading announcements:', error);
-            document.getElementById('announcementsTableBody').innerHTML = `
+                }
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+                document.getElementById('announcementsTableBody').innerHTML = `
             <tr>
                 <td colspan="3" class="no-announcements">
                     Error loading announcements
                 </td>
             </tr>
         `;
+            }
         }
-    }
 
         function toggleAnnouncementForm() {
             const form = document.getElementById('announcementForm');
@@ -212,15 +215,70 @@
             }
         }
 
+        // async function createAnnouncement(event) {
+        //     event.preventDefault();
+        //     showLoading(true);
+
+        //     try {
+        //         const title = document.getElementById('title').value;
+        //         const description = document.getElementById('description').value;
+        //         const announcement_date = document.getElementById('announcement_date').value;
+
+        //         const response = await fetch('/api/announcement', {
+        //             method: 'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify({
+        //                 title,
+        //                 description,
+        //                 announcement_date
+        //             })
+        //         });
+
+        //         const data = await response.json();
+
+        //         if (response.ok) {
+        //             showAlert('success', 'Announcement created successfully!');
+        //             event.target.reset();
+        //             toggleAnnouncementForm();
+        //             await loadAnnouncements();
+        //         } else {
+        //             showAlert('error', data.message || 'Failed to create announcement');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error creating announcement:', error);
+        //         showAlert('error', 'Error creating announcement');
+        //     } finally {
+        //         showLoading(false);
+        //     }
+        // }
         async function createAnnouncement(event) {
             event.preventDefault();
             showLoading(true);
 
-            try {
-                const title = document.getElementById('title').value;
-                const description = document.getElementById('description').value;
-                const announcement_date = document.getElementById('announcement_date').value;
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const announcement_date = document.getElementById('announcement_date').value;
 
+            const titleError = document.getElementById('titleError');
+            const descriptionError = document.getElementById('descriptionError');
+
+            titleError.textContent = '';
+            descriptionError.textContent = '';
+
+            if (!title) {
+                titleError.textContent = 'Title cannot be empty';
+                showLoading(false);
+                return;
+            }
+            if (!description) {
+                descriptionError.textContent = 'Description cannot be empty';
+                showLoading(false);
+                return;
+            }
+
+            try {
                 const response = await fetch('/api/announcement', {
                     method: 'POST',
                     headers: {
@@ -260,21 +318,21 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-                const now = new Date();
-                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
-                const announcementDateInput = document.getElementById('announcement_date');
-                announcementDateInput.min = now.toISOString().slice(0, 16); // Set minimum date to current date-time
+            const announcementDateInput = document.getElementById('announcement_date');
+            announcementDateInput.min = now.toISOString().slice(0, 16); // Set minimum date to current date-time
 
-                announcementDateInput.addEventListener('input', function () {
-                    if (this.value < this.min) {
-                        alert('You cannot select a past date!');
-                        this.value = this.min; // Reset value to min
-                    }
-                });
-
-                loadAnnouncements();
+            announcementDateInput.addEventListener('input', function () {
+                if (this.value < this.min) {
+                    alert('You cannot select a past date!');
+                    this.value = this.min; // Reset value to min
+                }
             });
+
+            loadAnnouncements();
+        });
 
     </script>
 </body>

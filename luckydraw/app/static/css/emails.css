@@ -74,7 +74,7 @@
     }
 
     .btn-secondary {
-        background: linear-gradient(135deg, #b22222 0%, #8b0000 100%) !important;
+        background: linear-gradient(135deg, #e55656 0%, #e13838 100%) !important;
         color: white !important;
     }
 
@@ -317,55 +317,81 @@
         }
     }
 
-@media screen and (max-width: 480px) {
-    .gradient-bg {
-        padding: 10px;
+    @media screen and (max-width: 480px) {
+        .gradient-bg {
+            padding: 10px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+        }
+
+        .form-control {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        .announcements-table {
+            display: block;
+            width: 100%;
+        }
+
+        .announcements-table thead {
+            display: none;
+            /* Hide table headers on small screens */
+        }
+
+        .announcements-table tbody,
+        .announcements-table tr {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .announcements-table td {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .announcements-table td::before {
+            content: attr(data-label);
+            font-weight: bold;
+        }
     }
 
-    .page-title {
-        font-size: 24px;
-        margin-bottom: 20px;
-    }
-
-    .section-title {
-        font-size: 20px;
-    }
-
-    .form-group label {
-        font-size: 14px;
-    }
-
-    .form-control {
-        padding: 8px;
-        font-size: 14px;
-    }
-
-    .announcements-table {
-        display: block;
-        width: 100%;
-    }
-
-    .announcements-table thead {
+    .error-message {
+        color: red;
+        font-size: 12px;
         display: none;
-        /* Hide table headers on small screens */
     }
 
-    .announcements-table tbody,
-    .announcements-table tr {
+    .form-actions {
         display: flex;
-        flex-direction: column;
-        width: 100%;
+        gap: 25px;
+        /* Increased gap between buttons */
     }
 
-    .announcements-table td {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
+    .btn-light-red {
+        background-color: #ffcccc;
+        /* Light red */
+        color: black;
+        border: 1px solid #ff9999;
     }
 
-    .announcements-table td::before {
-        content: attr(data-label);
-        font-weight: bold;
-    }
-}
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
+        }

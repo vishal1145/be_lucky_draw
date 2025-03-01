@@ -43,61 +43,58 @@
                     Details</h2>
 
                 <!-- Announcement Section -->
-            <table width="100%" cellpadding="0" cellspacing="0"
-                style="margin-bottom: 20px; background-color: #f8f9fa; border-radius: 8px;">
-                <tr>
-                    <td style="padding: 15px;">
-                        <table width="100%" cellpadding="0" cellspacing="0">
-                            <tr>
-                                <td width="24" style="padding-right: 15px; vertical-align: middle;">
-                                    <img src="https://lucky-draw.algofolks.com/static/images/emails/checklist.png" alt="Details"
-                                        style="width: 24px; height: 24px; display: block;">
-                                </td>
-                                <td style="vertical-align: middle;">
-                                    <h3 style="color: #4A55A2; font-size: 18px; margin: 0;">Event Details</h3>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <p style="margin: 0; color: #666;">{{ announcement.title }}</p>
-                                    <p style="margin: 5px 0; color: #666;">Date: {{ announcement.announcement_date.strftime('%d %B
-                                        %Y') }}</p>
-                                    <p style="margin: 5px 0; color: #666;">{{ announcement.description }}</p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+                <table width="100%" cellpadding="0" cellspacing="0"
+                    style="margin-bottom: 20px; background-color: #f8f9fa; border-radius: 8px;">
+                    <tr>
+                        <td style="padding: 15px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="display: flex;align-items: center;gap: 10px;">
+                                        <img src="https://lucky-draw.algofolks.com/static/images/emails/checklist.png"
+                                            alt="Details" style="width: 20px; height: 20px; display: block;">
+
+                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0;">Event Details</h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0; color: #666;">{{ announcement.title }}</p>
+                                        <p style="margin: 5px 0; color: #666;">Date: {{
+                                            announcement.announcement_date.strftime('%d %B
+                                            %Y') }}</p>
+                                        <p style="margin: 5px 0; color: #666;">{{ announcement.description }}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
 
 
-            <!-- Stay Tuned Section -->
-            <table width="100%" cellpadding="0" cellspacing="0"
-                style="margin-bottom: 20px; background-color: #f8f9fa; border-radius: 8px;">
-                <tr>
-                    <td style="padding: 15px;">
-                        <table width="100%" cellpadding="0" cellspacing="0">
-                            <tr>
-                                <td width="24" style="padding-right: 15px; vertical-align: middle;">
-                                    <img src="https://lucky-draw.algofolks.com/static/images/emails/gift-box-with-a-ribbon-on-top.png"
-                                        alt="Gift" style="width: 24px; height: 24px; display: block;">
-                                </td>
-                                <td style="vertical-align: middle;">
-                                    <h3 style="color: #4A55A2; font-size: 18px; margin: 0;">Stay Tuned!</h3>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <p style="margin: 0; color: #666;">Don't miss this important announcement. Make
-                                        sure to check your account on the announcement date!</p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+                <!-- Stay Tuned Section -->
+                <table width="100%" cellpadding="0" cellspacing="0"
+                    style="margin-bottom: 20px; background-color: #f8f9fa; border-radius: 8px;">
+                    <tr>
+                        <td style="padding: 15px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="display: flex;align-items: center;gap: 10px;">
+                                        <img src="https://lucky-draw.algofolks.com/static/images/emails/gift-box-with-a-ribbon-on-top.png"
+                                            alt="Gift" style="width: 20px; height: 20px; display: block;">
+
+                                        <h3 style="color: #4A55A2; font-size: 18px; margin: 0;">Stay Tuned!</h3>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p style="margin: 0; color: #666;">Don't miss this important announcement. Make
+                                            sure to check your account on the announcement date!</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
 
 
                 <!-- Signature -->
@@ -106,8 +103,8 @@
                 <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0;">
                     <tr>
                         <td style="text-align: center;">
-                            <img src="https://lucky-draw.algofolks.com/static/images/emails/algofolks-logo.png"  alt="Algofolks"
-                                style="height: 25px; vertical-align: middle; margin-right: 5px;">
+                            <img src="https://lucky-draw.algofolks.com/static/images/emails/algofolks-logo.png"
+                                alt="Algofolks" style="height: 25px; vertical-align: middle; margin-right: 5px;">
                             <span style="vertical-align: middle;">Algofolks Team</span>
                         </td>
                     </tr>
