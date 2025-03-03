@@ -124,6 +124,8 @@
                         <!-- <th>#</th> -->
                         <th>User</th>
                         <th>Technologies</th>
+                        <th>Requirements</th>
+
                         <th>Country</th>
                         <th>Registration Date</th>
                         <th>Status</th>
@@ -149,6 +151,8 @@
                             </div>
                         </td>
                         <td>{{ user.technologies }}</td>
+                        <td>{{ user.requirements }}</td>
+
                         <td>
                             {% if user.country_code in country_codes %}
                             <!-- <img src="https://flagcdn.com/w40/{{ country_codes[user.country_code]['code'] }}.png"
