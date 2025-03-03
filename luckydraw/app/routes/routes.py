@@ -258,6 +258,7 @@ def send_bulk_email(template_type):
                 continue
 
             try:
+                msg = None  
                 if template_type == 'results':
                     msg = Message(
                         'Lucky Draw Results Available!',
@@ -268,7 +269,7 @@ def send_bulk_email(template_type):
                                                name=user.name,
                                                announcement=latest_announcement)
                     
-                elif template_type == 'appointment':
+                elif template_type == 'announcement':
                     msg = Message(
                         'Upcoming Announcement',
                         sender=current_app.config['MAIL_USERNAME'],
@@ -279,13 +280,17 @@ def send_bulk_email(template_type):
                                                announcement=latest_announcement,
                                                share_url="https://algofolks.com")
 
-                mail.send(msg)
-                
-                # Update the correct email timestamp field
-                setattr(user, last_emailed_field, datetime.utcnow())
-                db.session.commit()
-                
-                successful_sends += 1
+                if msg:  # Check if msg was successfully created
+                    mail.send(msg)
+                    
+                    # Update the correct email timestamp field
+                    setattr(user, last_emailed_field, datetime.utcnow())
+                    db.session.commit()
+                    
+                    successful_sends += 1
+                else:
+                    print(f"❌ Invalid email template type for {user.email}, skipping.")
+                    failed_sends += 1
 
             except Exception as e:
                 failed_sends += 1
