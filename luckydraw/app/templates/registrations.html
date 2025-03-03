@@ -151,7 +151,7 @@
                             </div>
                         </td>
                         <td>{{ user.technologies }}</td>
-                        <td :html="user.requirements"></td>
+<td>{{ user.requirements | safe }}</td>
 
                         <td>
                             {% if user.country_code in country_codes %}
