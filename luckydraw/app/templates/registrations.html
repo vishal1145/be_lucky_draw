@@ -151,7 +151,7 @@
                             </div>
                         </td>
                         <td>{{ user.technologies }}</td>
-                        <td>{{ user.requirements }}</td>
+                        <td :html="user.requirements"></td>
 
                         <td>
                             {% if user.country_code in country_codes %}
