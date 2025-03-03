@@ -45,15 +45,13 @@ class AnnouncementService:
 
             for user in registered_users:
                 try:
-                    # print(f"Preparing email for {user.email}...")
+                    msg = None
 
-                    # Create message
                     msg = Message(
                         subject=f"Reminder: Upcoming Announcement - {announcement.title}",
                         recipients=[user.email]
                     )
 
-                    # Render email template
                     msg.html = render_template(
                         'emails/announcement_reminder.html',
                         announcement=announcement,
@@ -66,7 +64,7 @@ class AnnouncementService:
                     print(f"✅ Successfully sent reminder to {user.email}")
 
                 except Exception as e:
-                    print(f"❌ Failed to send reminder to {user.email}: {str(e)}")
+                    print(f"❌ Failed to send email to {user.email}: {str(e)}")
                     continue
 
         print("=== End: send_announcement_reminders ===")
