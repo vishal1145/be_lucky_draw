@@ -7,9 +7,17 @@ from app.services.email_service import mail
 from dotenv import load_dotenv
 import os
 import pymysql
+import logging
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 # Initialize extensions
 db = SQLAlchemy()
