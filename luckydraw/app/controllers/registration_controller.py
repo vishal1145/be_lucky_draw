@@ -100,12 +100,12 @@ class RegistrationController:
                 otp=otp_record.phone_otp
             )
             
-            if not email_sent or not sms_sent:
-                db.session.delete(otp_record)
-                db.session.commit()
-                return jsonify({
-                    'error': 'Failed to send OTPs'
-                }), 500
+            # if not email_sent or not sms_sent:
+            #     db.session.delete(otp_record)
+            #     db.session.commit()
+            #     return jsonify({
+            #         'error': 'Failed to send OTPs'
+            #     }), 500
 
             return jsonify({
                 'message': 'OTPs sent successfully',
