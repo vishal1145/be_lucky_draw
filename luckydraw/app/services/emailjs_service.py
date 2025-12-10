@@ -520,19 +520,16 @@ class EmailJSService:
             else:
                 time_remaining_text = f"{days_remaining} Days Left"
             
-            # Format announcement date for display
+            # Format announcement date for display (keep month capitalized)
             if days_remaining == 1:
                 date_display = "Tomorrow"
-                date_display_lower = "tomorrow"
             elif days_remaining == 0:
                 date_display = "Today"
-                date_display_lower = "today"
             else:
-                # Format as "December 25" or "December 25, 2025"
+                # Format as "December 25" or "December 25, 2025" (month starts with capital)
                 date_display = announcement_date.strftime("%B %d")
                 if announcement_date.year != now.year:
                     date_display += f", {announcement_date.year}"
-                date_display_lower = date_display.lower()
             
             # Format full date for subject/header
             formatted_date = announcement_date.strftime("%B %d, %Y")
@@ -545,7 +542,6 @@ class EmailJSService:
                 domain_name=domain_name,
                 announcement_date=announcement_date,
                 date_display=date_display,
-                date_display_lower=date_display_lower,
                 time_remaining_text=time_remaining_text,
                 formatted_date=formatted_date
             )
