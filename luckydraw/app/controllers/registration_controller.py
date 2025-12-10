@@ -182,14 +182,30 @@ class RegistrationController:
                 db.session.add(new_registration)
                 db.session.commit()
 
+                # Get next upcoming announcement date
+                next_announcement = Announcement.query.filter(
+                    Announcement.announcement_date >= datetime.utcnow(),
+                    Announcement.status == 'active'
+                ).order_by(Announcement.announcement_date.asc()).first()
+                
+                announcement_date = next_announcement.announcement_date if next_announcement else None
+                
                 # Send welcome email
+                logger.info(f"[REGISTRATION] Attempting to send welcome email to: {new_registration.email}")
                 try:
-                    EmailService.send_welcome_email(
+                    email_result = EmailService.send_welcome_email(
                         email=new_registration.email,
-                        name=new_registration.name
+                        name=new_registration.name,
+                        announcement_date=announcement_date
                     )
+                    if email_result:
+                        logger.info(f"[REGISTRATION] ✅ Welcome email sent successfully to {new_registration.email}")
+                    else:
+                        logger.error(f"[REGISTRATION] ❌ Failed to send welcome email to {new_registration.email}")
                 except Exception as email_error:
-                    logger.error(f"[REGISTRATION] Failed to send welcome email: {str(email_error)}")
+                    logger.error(f"[REGISTRATION] ❌ Exception sending welcome email: {str(email_error)}")
+                    import traceback
+                    logger.error(f"[REGISTRATION] Email error traceback: {traceback.format_exc()}")
                     # Don't fail registration if email fails
 
                 return jsonify({
@@ -266,10 +282,19 @@ class RegistrationController:
             db.session.delete(otp_record)
             db.session.commit()
 
+            # Get next upcoming announcement date
+            next_announcement = Announcement.query.filter(
+                Announcement.announcement_date >= datetime.utcnow(),
+                Announcement.status == 'active'
+            ).order_by(Announcement.announcement_date.asc()).first()
+            
+            announcement_date = next_announcement.announcement_date if next_announcement else None
+
             # Send welcome email
             EmailService.send_welcome_email(
                 email=new_registration.email,
-                name=new_registration.name
+                name=new_registration.name,
+                announcement_date=announcement_date
             )
 
             return jsonify({

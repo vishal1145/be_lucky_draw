@@ -210,11 +210,29 @@ class EmailJSService:
                 domain_name = current_app.config.get('DOMAIN_NAME', 'https://lucky-draw.fly.dev').rstrip('/')
                 logger.info(f"[EMAILJS] Using domain for images: {domain_name}")
                 
+                # Format announcement date
+                from datetime import datetime
+                formatted_announcement_date = 'soon'
+                if announcement_date:
+                    if isinstance(announcement_date, str):
+                        try:
+                            # Try parsing different date formats
+                            try:
+                                dt = datetime.strptime(announcement_date, '%Y-%m-%d %H:%M:%S')
+                            except:
+                                dt = datetime.strptime(announcement_date, '%Y-%m-%d')
+                            formatted_announcement_date = dt.strftime('%B %d, %Y')
+                        except:
+                            formatted_announcement_date = announcement_date
+                    elif isinstance(announcement_date, datetime):
+                        formatted_announcement_date = announcement_date.strftime('%B %d, %Y')
+                
                 html_content = render_template(
                     'emails/welcome_email.html',
                     first_name=first_name or name,
                     name=name,
                     announcement_date=announcement_date or 'soon',
+                    formatted_announcement_date=formatted_announcement_date,
                     domain_name=domain_name
                 )
                 logger.info(f"[EMAILJS] ✅ Template rendered successfully, HTML length: {len(html_content)} characters")
@@ -237,7 +255,7 @@ class EmailJSService:
                 template_id, 
                 template_params, 
                 html_content, 
-                '🎉 Welcome to the Lucky Draw – Your Chance to Win Big!'
+                '✅ Registration Confirmed: Your Software Credit Application'
             )
             
             if result:
