@@ -19,82 +19,52 @@ class RegistrationController:
     @staticmethod
     def initiate_verification(data):
         try:
-            logger.info("=" * 60)
-            logger.info("[REGISTRATION] Starting initiate_verification")
-            logger.info(f"[REGISTRATION] Request method: {request.method}")
-            logger.info(f"[REGISTRATION] Request content type: {request.content_type}")
-            
             # Get form data
             form_data = {
                 'name': request.form.get('name'),
                 'email': request.form.get('email'),
+                'company_name': request.form.get('company_name'),
                 'country_code': request.form.get('country_code'),
                 'phone': request.form.get('phone'),
                 'technologies': request.form.get('technologies'),
-                'requirements': request.form.get('requirements')
+                'requirements': request.form.get('requirements'),
+                'start_date': request.form.get('start_date')
             }
-            
-            logger.info(f"[REGISTRATION] Form data received:")
-            logger.info(f"  - Name: {form_data.get('name')}")
-            logger.info(f"  - Email: {form_data.get('email')}")
-            logger.info(f"  - Country Code: {form_data.get('country_code')}")
-            logger.info(f"  - Phone: {form_data.get('phone')}")
-            logger.info(f"  - Technologies: {form_data.get('technologies')}")
-            logger.info(f"  - Requirements: {form_data.get('requirements')[:100] if form_data.get('requirements') else None}...")
 
             # Validate required fields
-            logger.info("[REGISTRATION] Validating required fields...")
             required_fields = ['name', 'email', 'country_code', 'phone', 'technologies', 'requirements']
             for field in required_fields:
                 if not form_data.get(field):
-                    logger.warning(f"[REGISTRATION] ❌ Missing required field: {field}")
                     return jsonify({'error': f'Missing required field: {field}'}), 400
-            
-            logger.info("[REGISTRATION] ✅ All required fields present")
 
             # Check for existing email
-            logger.info(f"[REGISTRATION] Checking for existing email: {form_data['email']}")
             try:
                 existing_registration = Registration.query.filter_by(email=form_data['email']).first()
                 if existing_registration:
-                    logger.warning(f"[REGISTRATION] ❌ Email already registered: {form_data['email']}")
                     return jsonify({
                         'error': 'Email already registered'
                     }), 200
-                logger.info("[REGISTRATION] ✅ Email is available")
             except Exception as db_error:
-                logger.error(f"[REGISTRATION] ❌ Database error checking email: {str(db_error)}")
-                logger.error(f"[REGISTRATION] Traceback: {traceback.format_exc()}")
+                logger.error(f"[REGISTRATION] Database error checking email: {str(db_error)}")
                 raise
 
             # Check for existing phone number
-            logger.info(f"[REGISTRATION] Checking for existing phone: {form_data['phone']}")
             try:
                 existing_phone = Registration.query.filter_by(mobile_number=form_data['phone']).first()
                 if existing_phone:
-                    logger.warning(f"[REGISTRATION] ❌ Phone number already registered: {form_data['phone']}")
                     return jsonify({
                         'error': 'Phone number already registered'
                     }), 200
-                logger.info("[REGISTRATION] ✅ Phone number is available")
             except Exception as db_error:
-                logger.error(f"[REGISTRATION] ❌ Database error checking phone: {str(db_error)}")
-                logger.error(f"[REGISTRATION] Traceback: {traceback.format_exc()}")
+                logger.error(f"[REGISTRATION] Database error checking phone: {str(db_error)}")
                 raise
 
             # Handle image upload
-            logger.info("[REGISTRATION] Checking for image upload...")
             image = request.files.get('image')
             image_url = None
             
             if image:
-                logger.info(f"[REGISTRATION] Image file received: {image.filename}")
-                logger.info(f"[REGISTRATION] Image content type: {image.content_type}")
-                logger.info(f"[REGISTRATION] Image size: {len(image.read())} bytes")
-                image.seek(0)  # Reset file pointer
-                
                 if not allowed_file(image.filename):
-                    logger.warning(f"[REGISTRATION] ❌ Invalid file type: {image.filename}")
                     return jsonify({
                         'error': 'Invalid file type. Allowed types are: png, jpg, jpeg, gif'
                     }), 400
@@ -104,134 +74,142 @@ class RegistrationController:
                     unique_filename = f"{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}_{filename}"
                     upload_folder = current_app.config['UPLOAD_FOLDER']
                     
-                    logger.info(f"[REGISTRATION] Upload folder: {upload_folder}")
-                    logger.info(f"[REGISTRATION] Unique filename: {unique_filename}")
-                    
                     if not os.path.exists(upload_folder):
-                        logger.info(f"[REGISTRATION] Creating upload folder: {upload_folder}")
                         os.makedirs(upload_folder)
                     
                     image_path = os.path.join(upload_folder, unique_filename)
-                    logger.info(f"[REGISTRATION] Saving image to: {image_path}")
                     image.save(image_path)
-                    logger.info(f"[REGISTRATION] ✅ Image saved successfully")
                     
                     # Generate full URL with domain
                     domain = current_app.config.get('DOMAIN_NAME', '').rstrip('/')
                     if not domain:
-                        logger.error("[REGISTRATION] ❌ DOMAIN_NAME not configured")
                         return jsonify({
                             'error': 'Server configuration error: DOMAIN_NAME not set'
                         }), 500
                     
                     image_url = f"{domain}/uploads/{unique_filename}"
-                    logger.info(f"[REGISTRATION] Image URL: {image_url}")
 
                 except Exception as e:
-                    logger.error(f"[REGISTRATION] ❌ Failed to save image: {str(e)}")
-                    logger.error(f"[REGISTRATION] Error type: {type(e).__name__}")
-                    logger.error(f"[REGISTRATION] Traceback: {traceback.format_exc()}")
+                    logger.error(f"[REGISTRATION] Failed to save image: {str(e)}")
                     return jsonify({
                         'error': 'Failed to save image',
                         'message': str(e)
                     }), 500
-            else:
-                logger.info("[REGISTRATION] No image file provided")
 
             # Add image_url to form_data
             form_data['image_url'] = image_url
-            logger.info(f"[REGISTRATION] Image URL set: {image_url}")
 
-            # Create OTP record with all user data
-            logger.info("[REGISTRATION] Creating OTP record...")
+            # OTP verification disabled - directly register user
+            # # Create OTP record with all user data
+            # try:
+            #     otp_record = OTP(form_data)
+            #     db.session.add(otp_record)
+            #     db.session.commit()
+            # except Exception as db_error:
+            #     logger.error(f"[REGISTRATION] Failed to create OTP record: {str(db_error)}")
+            #     db.session.rollback()
+            #     raise
+            # 
+            # # Send email OTP
+            # try:
+            #     email_sent = EmailService.send_otp_email(
+            #         email=form_data.get('email'),
+            #         otp=otp_record.email_otp
+            #     )
+            # except Exception as email_error:
+            #     logger.error(f"[REGISTRATION] Exception sending email OTP: {str(email_error)}")
+            #     email_sent = False
+            # 
+            # # SMS OTP sending commented out - only email OTP is sent
+            # # phone_number = f"{form_data.get('country_code')}{form_data.get('phone')}"
+            # # try:
+            # #     sms_sent = SMSService.send_otp_sms(
+            # #         phone_number=phone_number,
+            # #         otp=otp_record.phone_otp
+            # #     )
+            # # except Exception as sms_error:
+            # #     logger.error(f"[REGISTRATION] Exception sending SMS OTP: {str(sms_error)}")
+            # #     sms_sent = False
+            # 
+            # if not email_sent:
+            #     logger.error(f"[REGISTRATION] Failed to send email OTP")
+            #     try:
+            #         db.session.delete(otp_record)
+            #         db.session.commit()
+            #     except Exception as delete_error:
+            #         logger.error(f"[REGISTRATION] Failed to delete OTP record: {str(delete_error)}")
+            #         db.session.rollback()
+            #     
+            #     return jsonify({
+            #         'error': 'Failed to send OTP'
+            #     }), 500
+            # 
+            # return jsonify({
+            #     'message': 'OTP sent successfully',
+            #     'temp_id': otp_record.id
+            # }), 200
+
+            # Fetch the latest announcement date
+            latest_announcement = Announcement.query.order_by(Announcement.announcement_date.desc()).first()
+            if not latest_announcement:
+                return jsonify({'error': 'No announcements found'}), 400
+
+            # Check if registration_date is within 1 day from announcement_date
+            announcement_date = latest_announcement.announcement_date
+            registration_date = datetime.utcnow()
+
+            # Allow registration ONLY one day before the announcement date
+            allowed_registration_date = announcement_date - timedelta(days=1)
+
+            if registration_date == allowed_registration_date:
+                return jsonify({'error': 'Registration is only allowed one day before the announcement date'}), 403
+
+            # Create registration directly (no OTP verification)
             try:
-                otp_record = OTP(form_data)
-                logger.info(f"[REGISTRATION] OTP record created - Email OTP: {otp_record.email_otp}, Phone OTP: {otp_record.phone_otp}")
-                logger.info(f"[REGISTRATION] OTP expires at: {otp_record.expires_at}")
-                
-                db.session.add(otp_record)
+                new_registration = Registration(
+                    name=form_data.get('name'),
+                    email=form_data.get('email'),
+                    company_name=form_data.get('company_name'),
+                    country_code=form_data.get('country_code'),
+                    mobile_number=form_data.get('phone'),
+                    technologies=form_data.get('technologies'),
+                    requirements=form_data.get('requirements'),
+                    start_date=form_data.get('start_date'),
+                    image_url=form_data.get('image_url'),
+                    registration_date=registration_date
+                )
+
+                db.session.add(new_registration)
                 db.session.commit()
-                logger.info(f"[REGISTRATION] ✅ OTP record saved to database with ID: {otp_record.id}")
+
+                # Send welcome email
+                try:
+                    EmailService.send_welcome_email(
+                        email=new_registration.email,
+                        name=new_registration.name
+                    )
+                except Exception as email_error:
+                    logger.error(f"[REGISTRATION] Failed to send welcome email: {str(email_error)}")
+                    # Don't fail registration if email fails
+
+                return jsonify({
+                    'message': 'Registration successful!',
+                    'user_id': new_registration.id
+                }), 201
             except Exception as db_error:
-                logger.error(f"[REGISTRATION] ❌ Failed to create OTP record: {str(db_error)}")
-                logger.error(f"[REGISTRATION] Error type: {type(db_error).__name__}")
-                logger.error(f"[REGISTRATION] Traceback: {traceback.format_exc()}")
+                logger.error(f"[REGISTRATION] Failed to create registration: {str(db_error)}")
                 db.session.rollback()
                 raise
             
-            # Send email OTP
-            logger.info(f"[REGISTRATION] Sending email OTP to: {form_data.get('email')}")
-            try:
-                email_sent = EmailService.send_otp_email(
-                    email=form_data.get('email'),
-                    otp=otp_record.email_otp
-                )
-                if email_sent:
-                    logger.info(f"[REGISTRATION] ✅ Email OTP sent successfully")
-                else:
-                    logger.error(f"[REGISTRATION] ❌ Failed to send email OTP")
-            except Exception as email_error:
-                logger.error(f"[REGISTRATION] ❌ Exception sending email OTP: {str(email_error)}")
-                logger.error(f"[REGISTRATION] Traceback: {traceback.format_exc()}")
-                email_sent = False
-            
-            # Send SMS OTP
-            phone_number = f"{form_data.get('country_code')}{form_data.get('phone')}"
-            logger.info(f"[REGISTRATION] Sending SMS OTP to: {phone_number}")
-            try:
-                sms_sent = SMSService.send_otp_sms(
-                    phone_number=phone_number,
-                    otp=otp_record.phone_otp
-                )
-                if sms_sent:
-                    logger.info(f"[REGISTRATION] ✅ SMS OTP sent successfully")
-                else:
-                    logger.error(f"[REGISTRATION] ❌ Failed to send SMS OTP")
-            except Exception as sms_error:
-                logger.error(f"[REGISTRATION] ❌ Exception sending SMS OTP: {str(sms_error)}")
-                logger.error(f"[REGISTRATION] Traceback: {traceback.format_exc()}")
-                sms_sent = False
-            
-            if not email_sent or not sms_sent:
-                logger.error(f"[REGISTRATION] ❌ OTP sending failed - Email: {email_sent}, SMS: {sms_sent}")
-                logger.info(f"[REGISTRATION] Deleting OTP record due to failed OTP sending...")
-                try:
-                    db.session.delete(otp_record)
-                    db.session.commit()
-                    logger.info(f"[REGISTRATION] OTP record deleted")
-                except Exception as delete_error:
-                    logger.error(f"[REGISTRATION] Failed to delete OTP record: {str(delete_error)}")
-                    db.session.rollback()
-                
-                return jsonify({
-                    'error': 'Failed to send OTPs'
-                }), 500
-
-            logger.info(f"[REGISTRATION] ✅ Registration initiation successful!")
-            logger.info(f"[REGISTRATION] Temp ID: {otp_record.id}")
-            logger.info("=" * 60)
-            
-            return jsonify({
-                'message': 'OTPs sent successfully',
-                'temp_id': otp_record.id
-            }), 200
-            
         except Exception as e:
-            logger.error("=" * 60)
-            logger.error(f"[REGISTRATION] ❌ EXCEPTION in initiate_verification: {str(e)}")
-            logger.error(f"[REGISTRATION] Error type: {type(e).__name__}")
-            logger.error(f"[REGISTRATION] Full traceback:")
-            logger.error(traceback.format_exc())
-            logger.error("=" * 60)
-            
+            logger.error(f"[REGISTRATION] Exception in registration: {str(e)}")
             try:
                 db.session.rollback()
-                logger.info("[REGISTRATION] Database session rolled back")
             except Exception as rollback_error:
                 logger.error(f"[REGISTRATION] Failed to rollback: {str(rollback_error)}")
             
             return jsonify({
-                'error': 'Failed to initiate verification',
+                'error': 'Failed to register',
                 'message': str(e)
             }), 400
 
@@ -240,7 +218,7 @@ class RegistrationController:
         try:
             temp_id = data.get('temp_id')
             email_otp = data.get('email_otp')
-            phone_otp = data.get('phone_otp')
+            # phone_otp = data.get('phone_otp')  # Phone OTP validation disabled
 
             otp_record = OTP.query.get(temp_id)
 
@@ -248,13 +226,14 @@ class RegistrationController:
                 return jsonify({'error': 'Invalid temporary ID'}), 400
 
             if datetime.utcnow() > otp_record.expires_at:
-                return jsonify({'error': 'OTPs expired'}), 400
+                return jsonify({'error': 'OTP expired'}), 400
 
             if email_otp != otp_record.email_otp:
                 return jsonify({'error': 'Invalid email OTP'}), 400
 
-            if phone_otp != otp_record.phone_otp:
-                return jsonify({'error': 'Invalid phone OTP'}), 400
+            # Phone OTP validation commented out - only email OTP is required
+            # if phone_otp != otp_record.phone_otp:
+            #     return jsonify({'error': 'Invalid phone OTP'}), 400
 
             # Fetch the latest announcement date
             latest_announcement = Announcement.query.order_by(Announcement.announcement_date.desc()).first()

@@ -22,14 +22,15 @@ def initiate_register():
         
     return RegistrationController.initiate_verification(request)
 
-@main_bp.route('/api/register/verify', methods=['POST'])
-def verify_registration():
-    data = request.get_json()
-    required_fields = ['temp_id', 'email_otp', 'phone_otp']
-    for field in required_fields:
-        if field not in data:
-            return jsonify({'error': f'Missing required field: {field}'}), 400
-    return RegistrationController.verify_and_register(data)
+# OTP verification disabled - users are registered directly
+# @main_bp.route('/api/register/verify', methods=['POST'])
+# def verify_registration():
+#     data = request.get_json()
+#     required_fields = ['temp_id', 'email_otp']
+#     for field in required_fields:
+#         if field not in data:
+#             return jsonify({'error': f'Missing required field: {field}'}), 400
+#     return RegistrationController.verify_and_register(data)
 
 @main_bp.route('/api/users', methods=['GET'])
 def get_users():

@@ -16,20 +16,14 @@ class EmailService:
         Returns: True if successful, False otherwise
         """
         try:
-            logger.info(f"[EMAIL] Attempting to send OTP email to: {email}")
-            logger.info(f"[EMAIL] OTP: {otp}")
-            
             # Check if email configuration is available
             mail_server = current_app.config.get('MAIL_SERVER')
             mail_username = current_app.config.get('MAIL_USERNAME')
             
             if not mail_server or not mail_username:
-                logger.warning(f"[EMAIL] ⚠️  Email configuration not found. Mail server: {mail_server}, Username: {mail_username}")
-                logger.warning(f"[EMAIL] Email would be sent to: {email} with OTP: {otp}")
                 return True  # Return True for testing
             
             # Email template
-            logger.info("[EMAIL] Preparing email template...")
             html_content = '''
             <html>
                 <body>
@@ -43,44 +37,31 @@ class EmailService:
             # Render template with OTP
             try:
                 html = render_template_string(html_content, otp=otp)
-                logger.info("[EMAIL] ✅ Email template rendered successfully")
             except Exception as template_error:
-                logger.error(f"[EMAIL] ❌ Failed to render email template: {str(template_error)}")
-                logger.error(f"[EMAIL] Traceback: {traceback.format_exc()}")
+                logger.error(f"[EMAIL] Failed to render email template: {str(template_error)}")
                 raise
             
             # Create message
-            logger.info("[EMAIL] Creating email message...")
             try:
                 msg = Message(
                     'Email Verification OTP',
                     recipients=[email],
                     html=html
                 )
-                logger.info(f"[EMAIL] Email message created - Subject: 'Email Verification OTP'")
-                logger.info(f"[EMAIL] Recipient: {email}")
             except Exception as msg_error:
-                logger.error(f"[EMAIL] ❌ Failed to create email message: {str(msg_error)}")
-                logger.error(f"[EMAIL] Traceback: {traceback.format_exc()}")
+                logger.error(f"[EMAIL] Failed to create email message: {str(msg_error)}")
                 raise
             
             # Send email
-            logger.info(f"[EMAIL] Sending email via mail server: {mail_server}...")
             try:
                 mail.send(msg)
-                logger.info(f"[EMAIL] ✅ OTP email sent successfully to: {email}")
                 return True
             except Exception as send_error:
-                logger.error(f"[EMAIL] ❌ Failed to send email: {str(send_error)}")
-                logger.error(f"[EMAIL] Error type: {type(send_error).__name__}")
-                logger.error(f"[EMAIL] Traceback: {traceback.format_exc()}")
+                logger.error(f"[EMAIL] Failed to send email: {str(send_error)}")
                 return False
             
         except Exception as e:
-            logger.error(f"[EMAIL] ❌ EXCEPTION in send_otp_email: {str(e)}")
-            logger.error(f"[EMAIL] Error type: {type(e).__name__}")
-            logger.error(f"[EMAIL] Full traceback:")
-            logger.error(traceback.format_exc())
+            logger.error(f"[EMAIL] Exception in send_otp_email: {str(e)}")
             return False 
 
     @staticmethod

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test - Lucky Draw API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background 0.3s;
+            width: 100%;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-success {
+            background: #28a745;
+        }
+        
+        .status-error {
+            background: #dc3545;
+        }
+        
+        .status-pending {
+            background: #ffc107;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 CORS Test Page</h1>
+        <p class="subtitle">Test API endpoints for CORS errors</p>
+        
+        <!-- Test 1: Simple GET Request -->
+        <div class="test-section">
+            <h2>Test 1: GET Request (Get Users)</h2>
+            <button onclick="testGetUsers()">Test GET /api/users</button>
+            <div id="result1" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Test 2: POST Request with Form Data -->
+        <div class="test-section">
+            <h2>Test 2: POST Request (Register Initiate)</h2>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" id="name" value="Test User" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="email" value="test@example.com" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+                <label>Company Name:</label>
+                <input type="text" id="company_name" value="Test Company" placeholder="Enter company name">
+            </div>
+            <div class="grid">
+                <div class="form-group">
+                    <label>Country Code:</label>
+                    <select id="country_code">
+                        <option value="+91">+91 (India)</option>
+                        <option value="+1">+1 (US)</option>
+                        <option value="+44">+44 (UK)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Phone:</label>
+                    <input type="text" id="phone" value="1234567890" placeholder="Enter phone">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Technologies:</label>
+                <input type="text" id="technologies" value="Technology" placeholder="Enter technologies">
+            </div>
+            <div class="form-group">
+                <label>Requirements:</label>
+                <textarea id="requirements" placeholder="Enter requirements">Test requirements for CORS testing</textarea>
+            </div>
+            <div class="form-group">
+                <label>Start Date:</label>
+                <select id="start_date">
+                    <option value="this_week">This Week</option>
+                    <option value="next_week">Next Week</option>
+                    <option value="this_month">This Month</option>
+                </select>
+            </div>
+            <button onclick="testRegister()">Test POST /api/register/initiate</button>
+            <div id="result2" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Test 3: OPTIONS Preflight Request -->
+        <div class="test-section">
+            <h2>Test 3: OPTIONS Preflight Request</h2>
+            <button onclick="testOptions()">Test OPTIONS Request</button>
+            <div id="result3" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Test 4: Check CORS Headers -->
+        <div class="test-section">
+            <h2>Test 4: Check CORS Headers</h2>
+            <button onclick="checkCorsHeaders()">Check Response Headers</button>
+            <div id="result4" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:5000';
+        
+        function showResult(elementId, message, type = 'info') {
+            const resultDiv = document.getElementById(elementId);
+            resultDiv.style.display = 'block';
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+        
+        function formatResponse(data) {
+            if (typeof data === 'object') {
+                return JSON.stringify(data, null, 2);
+            }
+            return data;
+        }
+        
+        // Test 1: GET Request
+        async function testGetUsers() {
+            const resultDiv = document.getElementById('result1');
+            showResult('result1', '⏳ Testing GET request...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('result1', 
+                        `✅ SUCCESS!\n\nStatus: ${response.status} ${response.statusText}\n\nResponse:\n${formatResponse(data)}`,
+                        'success'
+                    );
+                } else {
+                    showResult('result1', 
+                        `⚠️ Response received but not OK\n\nStatus: ${response.status} ${response.statusText}\n\nResponse:\n${formatResponse(data)}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                if (error.name === 'TypeError' && error.message.includes('CORS')) {
+                    showResult('result1', 
+                        `❌ CORS ERROR!\n\n${error.message}\n\nThis means CORS is not properly configured.`,
+                        'error'
+                    );
+                } else {
+                    showResult('result1', 
+                        `❌ ERROR!\n\n${error.name}: ${error.message}`,
+                        'error'
+                    );
+                }
+            }
+        }
+        
+        // Test 2: POST Request with Form Data
+        async function testRegister() {
+            const resultDiv = document.getElementById('result2');
+            showResult('result2', '⏳ Testing POST request with form data...', 'info');
+            
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('company_name', document.getElementById('company_name').value);
+            formData.append('country_code', document.getElementById('country_code').value);
+            formData.append('phone', document.getElementById('phone').value);
+            formData.append('technologies', document.getElementById('technologies').value);
+            formData.append('requirements', document.getElementById('requirements').value);
+            formData.append('start_date', document.getElementById('start_date').value);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/register/initiate`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('result2', 
+                        `✅ SUCCESS!\n\nStatus: ${response.status} ${response.statusText}\n\nResponse:\n${formatResponse(data)}`,
+                        'success'
+                    );
+                } else {
+                    showResult('result2', 
+                        `⚠️ Response received but not OK\n\nStatus: ${response.status} ${response.statusText}\n\nResponse:\n${formatResponse(data)}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                if (error.name === 'TypeError' && error.message.includes('CORS')) {
+                    showResult('result2', 
+                        `❌ CORS ERROR!\n\n${error.message}\n\nThis means CORS is not properly configured.`,
+                        'error'
+                    );
+                } else {
+                    showResult('result2', 
+                        `❌ ERROR!\n\n${error.name}: ${error.message}`,
+                        'error'
+                    );
+                }
+            }
+        }
+        
+        // Test 3: OPTIONS Preflight Request
+        async function testOptions() {
+            showResult('result3', '⏳ Testing OPTIONS preflight request...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/register/initiate`, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Origin': window.location.origin,
+                        'Access-Control-Request-Method': 'POST',
+                        'Access-Control-Request-Headers': 'Content-Type',
+                    }
+                });
+                
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    headers[key] = value;
+                });
+                
+                if (response.ok) {
+                    showResult('result3', 
+                        `✅ OPTIONS Request Successful!\n\nStatus: ${response.status} ${response.statusText}\n\nCORS Headers:\n${formatResponse(headers)}`,
+                        'success'
+                    );
+                } else {
+                    showResult('result3', 
+                        `⚠️ OPTIONS Request Status: ${response.status}\n\nHeaders:\n${formatResponse(headers)}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('result3', 
+                    `❌ ERROR!\n\n${error.name}: ${error.message}`,
+                    'error'
+                );
+            }
+        }
+        
+        // Test 4: Check CORS Headers
+        async function checkCorsHeaders() {
+            showResult('result4', '⏳ Checking CORS headers in response...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers'),
+                    'Access-Control-Allow-Credentials': response.headers.get('Access-Control-Allow-Credentials'),
+                    'Access-Control-Max-Age': response.headers.get('Access-Control-Max-Age'),
+                };
+                
+                const allHeaders = {};
+                response.headers.forEach((value, key) => {
+                    allHeaders[key] = value;
+                });
+                
+                const hasCorsHeaders = Object.values(corsHeaders).some(val => val !== null);
+                
+                if (hasCorsHeaders) {
+                    showResult('result4', 
+                        `✅ CORS Headers Found!\n\nCORS Headers:\n${formatResponse(corsHeaders)}\n\nAll Response Headers:\n${formatResponse(allHeaders)}`,
+                        'success'
+                    );
+                } else {
+                    showResult('result4', 
+                        `⚠️ No CORS Headers Found\n\nAll Response Headers:\n${formatResponse(allHeaders)}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('result4', 
+                    `❌ ERROR!\n\n${error.name}: ${error.message}`,
+                    'error'
+                );
+            }
+        }
+    </script>
+</body>
+</html>
+

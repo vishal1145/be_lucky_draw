@@ -1,12 +1,43 @@
 import os
 from dotenv import load_dotenv
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 
 load_dotenv()
 
 class Config:
     # MySQL Database Configuration
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    
+    @staticmethod
+    def _parse_database_url(url):
+        """Parse and fix DATABASE_URL to be compatible with PyMySQL"""
+        if not url:
+            return url
+        
+        # Parse the URL
+        parsed = urlparse(url)
+        
+        # Convert mysql:// to mysql+pymysql:// for SQLAlchemy
+        if parsed.scheme == 'mysql':
+            scheme = 'mysql+pymysql'
+        else:
+            scheme = parsed.scheme
+        
+        # Parse query parameters
+        query_params = parse_qs(parsed.query)
+        
+        # Remove ssl-mode parameter (PyMySQL doesn't support it)
+        if 'ssl-mode' in query_params:
+            del query_params['ssl-mode']
+        
+        # Reconstruct query string
+        new_query = urlencode(query_params, doseq=True)
+        
+        # Reconstruct the URL
+        new_parsed = parsed._replace(scheme=scheme, query=new_query)
+        return urlunparse(new_parsed)
+    
+    SQLALCHEMY_DATABASE_URI = _parse_database_url(os.getenv('DATABASE_URL'))
 
     # Flask Configuration
     SECRET_KEY = os.getenv('SECRET_KEY')
@@ -29,12 +60,15 @@ class Config:
     DOMAIN_NAME = os.getenv('DOMAIN_NAME')
     
     # Upload folder configuration
-    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uploads')
+    # Use relative path for Fly.io compatibility (workspace directory)
+    UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
 
     # CORS Configuration
-    CORS_ORIGINS = os.getenv('CORS_ORIGINS', '').split(',')
+    # Handle empty string and filter out empty values
+    cors_origins_str = os.getenv('CORS_ORIGINS', '')
+    CORS_ORIGINS = [origin.strip() for origin in cors_origins_str.split(',') if origin.strip()] if cors_origins_str else []
 
     # Static file configuration
     STATIC_FOLDER = 'static'

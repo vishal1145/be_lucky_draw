@@ -123,6 +123,7 @@
                     <tr>
                         <!-- <th>#</th> -->
                         <th>User</th>
+                        <th>Company Name</th>
                         <th>Technologies</th>
                         <th>Requirements</th>
 
@@ -150,6 +151,7 @@
                                 </div>
                             </div>
                         </td>
+                        <td>{{ user.company_name if user.company_name else '-' }}</td>
                         <td>{{ user.technologies }}</td>
 <td>{{ user.requirements | safe }}</td>
 
