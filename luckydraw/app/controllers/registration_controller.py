@@ -182,21 +182,12 @@ class RegistrationController:
                 db.session.add(new_registration)
                 db.session.commit()
 
-                # Get next upcoming announcement date
-                next_announcement = Announcement.query.filter(
-                    Announcement.announcement_date >= datetime.utcnow(),
-                    Announcement.status == 'active'
-                ).order_by(Announcement.announcement_date.asc()).first()
-                
-                announcement_date = next_announcement.announcement_date if next_announcement else None
-                
                 # Send welcome email
                 logger.info(f"[REGISTRATION] Attempting to send welcome email to: {new_registration.email}")
                 try:
                     email_result = EmailService.send_welcome_email(
                         email=new_registration.email,
-                        name=new_registration.name,
-                        announcement_date=announcement_date
+                        name=new_registration.name
                     )
                     if email_result:
                         logger.info(f"[REGISTRATION] ✅ Welcome email sent successfully to {new_registration.email}")
@@ -282,19 +273,10 @@ class RegistrationController:
             db.session.delete(otp_record)
             db.session.commit()
 
-            # Get next upcoming announcement date
-            next_announcement = Announcement.query.filter(
-                Announcement.announcement_date >= datetime.utcnow(),
-                Announcement.status == 'active'
-            ).order_by(Announcement.announcement_date.asc()).first()
-            
-            announcement_date = next_announcement.announcement_date if next_announcement else None
-
             # Send welcome email
             EmailService.send_welcome_email(
                 email=new_registration.email,
-                name=new_registration.name,
-                announcement_date=announcement_date
+                name=new_registration.name
             )
 
             return jsonify({

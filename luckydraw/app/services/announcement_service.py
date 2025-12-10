@@ -1,10 +1,9 @@
 from app import db
 from app.models.registration import Registration
 from app.models.announcement import Announcement
-from app.services.email_service import mail
+from app.services.emailjs_service import EmailJSService
 from flask import render_template
 from datetime import datetime, timedelta
-from flask_mail import Message
 
 class AnnouncementService:
     @staticmethod
@@ -45,23 +44,19 @@ class AnnouncementService:
 
             for user in registered_users:
                 try:
-                    msg = None
-
-                    msg = Message(
-                        subject=f"Reminder: Upcoming Announcement - {announcement.title}",
-                        recipients=[user.email]
-                    )
-
-                    msg.html = render_template(
-                        'emails/announcement_reminder.html',
-                        announcement=announcement,
+                    print(f"Sending email to {user.email}...")
+                    success = EmailJSService.send_announcement_reminder(
+                        email=user.email,
                         name=user.name,
+                        announcement_title=announcement.title,
+                        announcement_date=announcement.announcement_date,
                         share_url="https://algofolks.com"
                     )
-
-                    print(f"Sending email to {user.email}...")
-                    mail.send(msg)
-                    print(f"✅ Successfully sent reminder to {user.email}")
+                    
+                    if success:
+                        print(f"✅ Successfully sent reminder to {user.email}")
+                    else:
+                        print(f"❌ Failed to send email to {user.email}")
 
                 except Exception as e:
                     print(f"❌ Failed to send email to {user.email}: {str(e)}")
@@ -84,22 +79,18 @@ class AnnouncementService:
 
         for user in registered_users:
             try:
-                msg = Message(
-                    subject=f"Results Available - {announcement.title}",
-                    recipients=[user.email]
-                )
-
-                # Render email template
-                msg.html = render_template(
-                    'emails/results_notification.html',
-                    announcement=announcement,
+                print(f"Sending results notification to {user.email}...")
+                success = EmailJSService.send_results_notification(
+                    email=user.email,
                     name=user.name,
+                    announcement_title=announcement.title,
                     share_url="https://algofolks.com"
                 )
-
-                print(f"Sending results notification to {user.email}...")
-                mail.send(msg)
-                print(f"✅ Successfully sent results notification to {user.email}")
+                
+                if success:
+                    print(f"✅ Successfully sent results notification to {user.email}")
+                else:
+                    print(f"❌ Failed to send results notification to {user.email}")
 
             except Exception as e:
                 print(f"❌ Failed to send results notification to {user.email}: {str(e)}")

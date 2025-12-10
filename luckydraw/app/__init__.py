@@ -3,8 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 from config import Config
-from app.services.email_service import mail
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 import os
 import pymysql
 import logging
@@ -79,7 +79,7 @@ def create_app(config_class=Config):
     # Initialize extensions with app
     db.init_app(app)
     migrate.init_app(app, db)
-    mail.init_app(app)
+    # EmailJS is used for email sending
     
     # Import models to ensure they're registered with SQLAlchemy
     from app.models import registration, otp, announcement
@@ -106,12 +106,25 @@ def create_app(config_class=Config):
             # Allow all origins (wildcard)
             response.headers['Access-Control-Allow-Origin'] = '*'
         else:
-            # Allow specific origin if it's in the list, otherwise use the request origin
-            if origin and origin in cors_origins:
-                response.headers['Access-Control-Allow-Origin'] = origin
-            elif origin:
-                # If origin is provided but not in list, still allow it for development
-                response.headers['Access-Control-Allow-Origin'] = origin
+            # Normalize origin (remove trailing slash and path if present)
+            normalized_origin = origin.rstrip('/') if origin else None
+            # Extract just the domain (protocol + domain, no path)
+            if normalized_origin:
+                # Remove any path after domain
+                parsed = urlparse(normalized_origin)
+                domain_origin = f"{parsed.scheme}://{parsed.netloc}"
+                
+                # Check if domain_origin is in allowed origins
+                if domain_origin in cors_origins:
+                    response.headers['Access-Control-Allow-Origin'] = domain_origin
+                elif normalized_origin in cors_origins:
+                    response.headers['Access-Control-Allow-Origin'] = normalized_origin
+                else:
+                    # For development, allow if it's algofolks.com domain
+                    if 'algofolks.com' in domain_origin:
+                        response.headers['Access-Control-Allow-Origin'] = domain_origin
+                    else:
+                        response.headers['Access-Control-Allow-Origin'] = '*'
             else:
                 response.headers['Access-Control-Allow-Origin'] = '*'
         

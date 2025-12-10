@@ -43,13 +43,28 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY')
     DEBUG = os.environ.get('FLASK_ENV') != 'production'
 
-    # Email Configuration
+    # Email Configuration (SMTP - Legacy, kept for backward compatibility)
     MAIL_SERVER = os.getenv('MAIL_SERVER')
     MAIL_PORT = int(os.getenv('MAIL_PORT', '587'))
     MAIL_USE_TLS = os.getenv('MAIL_USE_TLS', 'True').lower() == 'true'
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER')
+    
+    # EmailJS Configuration
+    EMAILJS_SERVICE_ID = os.getenv('EMAILJS_SERVICE_ID')
+    EMAILJS_USER_ID = os.getenv('EMAILJS_USER_ID')  # Public Key
+    EMAILJS_ACCESS_TOKEN = os.getenv('EMAILJS_ACCESS_TOKEN')  # Private Key for server-side
+    # Use a single generic template ID for all emails (recommended)
+    # The HTML templates are rendered from codebase and passed as message_html
+    EMAILJS_TEMPLATE_GENERIC = os.getenv('EMAILJS_TEMPLATE_GENERIC')
+    # Legacy: Individual template IDs (optional, will fallback to GENERIC if not set)
+    EMAILJS_TEMPLATE_WELCOME = os.getenv('EMAILJS_TEMPLATE_WELCOME')
+    EMAILJS_TEMPLATE_OTP = os.getenv('EMAILJS_TEMPLATE_OTP')
+    EMAILJS_TEMPLATE_WINNER = os.getenv('EMAILJS_TEMPLATE_WINNER')
+    EMAILJS_TEMPLATE_VERIFICATION = os.getenv('EMAILJS_TEMPLATE_VERIFICATION')
+    EMAILJS_TEMPLATE_ANNOUNCEMENT = os.getenv('EMAILJS_TEMPLATE_ANNOUNCEMENT')
+    EMAILJS_TEMPLATE_RESULTS = os.getenv('EMAILJS_TEMPLATE_RESULTS')
 
     # Twilio Configuration
     TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
@@ -79,10 +94,22 @@ class Config:
         required_vars = [
             'DATABASE_URL',
             'SECRET_KEY',
-            'MAIL_USERNAME',
-            'MAIL_PASSWORD',
             'DOMAIN_NAME'
         ]
+        
+        # EmailJS is now required (replacing SMTP)
+        emailjs_vars = [
+            'EMAILJS_SERVICE_ID',
+            'EMAILJS_USER_ID',
+            'EMAILJS_ACCESS_TOKEN'
+        ]
+        
+        missing_emailjs = [var for var in emailjs_vars if not os.getenv(var)]
+        if missing_emailjs:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"EmailJS configuration missing: {', '.join(missing_emailjs)}")
+            logger.warning("Email sending may not work properly without EmailJS configuration")
         
         missing_vars = [var for var in required_vars if not os.getenv(var)]
         if missing_vars:

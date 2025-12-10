@@ -27,10 +27,10 @@
         <div class="alert alert-error" id="errorAlert"></div>
 
         <div class="email-actions">
-            <button onclick="sendBulkEmail('results')" class="btn btn-primary btn-large">
+            <button onclick="sendBulkEmail('results', event)" class="btn btn-primary btn-large">
                 Send Results Emails
             </button>
-            <button onclick="sendBulkEmail('announcement')" class="btn btn-primary btn-large">
+            <button onclick="sendBulkEmail('announcement', event)" class="btn btn-primary btn-large">
                 Send Announcement Emails
             </button>
         </div>
@@ -88,6 +88,23 @@
         <div class="loading-spinner"></div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Email Sending</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+                <p class="warning-text">⚠️ This action cannot be undone. Are you sure you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeConfirmModal()" class="btn btn-secondary">Cancel</button>
+                <button onclick="confirmSendEmail()" class="btn btn-danger">Yes, Send Emails</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function showAlert(type, message) {
             const successAlert = document.getElementById('successAlert');
@@ -115,14 +132,44 @@
             overlay.style.display = show ? 'flex' : 'none';
         }
 
-        async function sendBulkEmail(templateType) {
-            if (!confirm(`Are you sure you want to send ${templateType} emails to all verified users?`)) {
+        let pendingEmailType = null;
+        let pendingButton = null;
+        let pendingOriginalText = null;
+
+        function sendBulkEmail(templateType, event) {
+            const button = event.target;
+            const emailTypeName = templateType === 'results' ? 'Results' : 'Announcement';
+            
+            pendingEmailType = templateType;
+            pendingButton = button;
+            pendingOriginalText = button.innerHTML;
+            
+            document.getElementById('confirmMessage').textContent = 
+                `You are about to send ${emailTypeName} emails to all verified users.`;
+            
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            pendingEmailType = null;
+            pendingButton = null;
+            pendingOriginalText = null;
+        }
+
+        async function confirmSendEmail() {
+            if (!pendingEmailType || !pendingButton) {
                 return;
             }
 
-            const button = event.target;
-            const originalText = button.innerHTML;
+            const templateType = pendingEmailType;
+            const button = pendingButton;
+            const originalText = pendingOriginalText;
+
+            closeConfirmModal();
+            
             button.disabled = true;
+            button.innerHTML = 'Sending...';
             showLoading(true);
 
             try {
@@ -332,6 +379,23 @@
             });
 
             loadAnnouncements();
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('confirmModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeConfirmModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('confirmModal');
+                if (modal.style.display === 'flex') {
+                    closeConfirmModal();
+                }
+            }
         });
 
     </script>

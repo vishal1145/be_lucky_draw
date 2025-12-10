@@ -8,8 +8,7 @@ from flask import current_app
 from app import db
 from datetime import datetime
 from app.services.announcement_service import AnnouncementService
-from app.services.email_service import mail
-from flask_mail import Message
+from app.services.emailjs_service import EmailJSService
 
 # @main_bp.route('/')
 # def index():
@@ -259,39 +258,42 @@ def send_bulk_email(template_type):
                 continue
 
             try:
-                msg = None  
+                success = False
+                
                 if template_type == 'results':
-                    msg = Message(
-                        'Lucky Draw Results Available!',
-                        sender=current_app.config['MAIL_USERNAME'],
-                        recipients=[user.email]
+                    success = EmailJSService.send_results_notification(
+                        email=user.email,
+                        name=user.name,
+                        announcement_title=latest_announcement.title,
+                        share_url="https://algofolks.com"
                     )
-                    msg.html = render_template('emails/results_notification.html',
-                                               name=user.name,
-                                               announcement=latest_announcement)
                     
                 elif template_type == 'announcement':
-                    msg = Message(
-                        'Upcoming Announcement',
-                        sender=current_app.config['MAIL_USERNAME'],
-                        recipients=[user.email]
+                    success = EmailJSService.send_announcement_reminder(
+                        email=user.email,
+                        name=user.name,
+                        announcement_title=latest_announcement.title,
+                        announcement_date=latest_announcement.announcement_date,
+                        share_url="https://algofolks.com"
                     )
-                    msg.html = render_template('emails/announcement_reminder.html',
-                                               name=user.name,
-                                               announcement=latest_announcement,
-                                               share_url="https://algofolks.com")
-
-                if msg:  # Check if msg was successfully created
-                    mail.send(msg)
-                    
-                    # Update the correct email timestamp field
-                    setattr(user, last_emailed_field, datetime.utcnow())
-                    db.session.commit()
-                    
-                    successful_sends += 1
                 else:
                     print(f"❌ Invalid email template type for {user.email}, skipping.")
                     failed_sends += 1
+                    continue
+
+                if success:
+                    # Update the correct email timestamp field
+                    setattr(user, last_emailed_field, datetime.utcnow())
+                    db.session.commit()
+                    successful_sends += 1
+                else:
+                    failed_sends += 1
+                    print(f"Failed to send email to {user.email}")
+
+            except Exception as e:
+                failed_sends += 1
+                print(f"Failed to send email to {user.email}: {str(e)}")
+                continue
 
             except Exception as e:
                 failed_sends += 1
@@ -311,3 +313,79 @@ def send_bulk_email(template_type):
     except Exception as e:
         print(f"Error in bulk email process: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@main_bp.route('/api/debug/emailjs-config', methods=['GET'])
+def debug_emailjs_config():
+    """Debug endpoint to check EmailJS configuration"""
+    if request.cookies.get('user_logged_in') != 'true':
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    config_status = {
+        'EMAILJS_SERVICE_ID': 'SET' if current_app.config.get('EMAILJS_SERVICE_ID') else 'MISSING',
+        'EMAILJS_USER_ID': 'SET' if current_app.config.get('EMAILJS_USER_ID') else 'MISSING',
+        'EMAILJS_ACCESS_TOKEN': 'SET' if current_app.config.get('EMAILJS_ACCESS_TOKEN') else 'MISSING',
+        'EMAILJS_TEMPLATE_GENERIC': current_app.config.get('EMAILJS_TEMPLATE_GENERIC') or 'MISSING',
+        'EMAILJS_TEMPLATE_WELCOME': current_app.config.get('EMAILJS_TEMPLATE_WELCOME') or 'MISSING',
+    }
+    
+    return jsonify({
+        'status': 'ok',
+        'config': config_status,
+        'message': 'Check the config values above. All should be SET except template IDs (only one needed)'
+    })
+
+@main_bp.route('/api/users/delete-all', methods=['DELETE'])
+def delete_all_users():
+    """
+    Delete all users from the database (for testing purposes)
+    Requires admin authentication
+    
+    Usage:
+        DELETE /api/users/delete-all
+        Headers: Cookie with user_logged_in=true
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    # Check authentication
+    if request.cookies.get('user_logged_in') != 'true':
+        logger.warning("[DELETE_USERS] Unauthorized access attempt")
+        return jsonify({'error': 'Unauthorized. Please login as admin.'}), 401
+    
+    try:
+        logger.info("[DELETE_USERS] Starting delete all users operation...")
+        
+        # Get count before deletion
+        total_users = Registration.query.count()
+        logger.info(f"[DELETE_USERS] Total users in database: {total_users}")
+        
+        if total_users == 0:
+            logger.info("[DELETE_USERS] No users to delete")
+            return jsonify({
+                'message': 'No users to delete',
+                'deleted_count': 0
+            }), 200
+        
+        # Delete all users
+        deleted_count = Registration.query.delete()
+        logger.info(f"[DELETE_USERS] Deleted {deleted_count} user(s) from query")
+        
+        # Commit the transaction
+        db.session.commit()
+        logger.info(f"[DELETE_USERS] ✅ Successfully committed deletion of {deleted_count} user(s)")
+        
+        return jsonify({
+            'message': f'Successfully deleted {deleted_count} user(s)',
+            'deleted_count': deleted_count,
+            'total_users_before': total_users
+        }), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"[DELETE_USERS] ❌ Error deleting users: {str(e)}")
+        import traceback
+        logger.error(f"[DELETE_USERS] Traceback: {traceback.format_exc()}")
+        return jsonify({
+            'error': 'Failed to delete users',
+            'message': str(e)
+        }), 500
