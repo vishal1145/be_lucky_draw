@@ -206,32 +206,41 @@ class EmailJSService:
             # Render HTML template from codebase
             logger.info("[EMAILJS] Rendering welcome_email.html template...")
             try:
+                from datetime import datetime
+                from app.models.announcement import Announcement
+                
                 # Get domain name for image URLs
                 domain_name = current_app.config.get('DOMAIN_NAME', 'https://lucky-draw.fly.dev').rstrip('/')
                 logger.info(f"[EMAILJS] Using domain for images: {domain_name}")
                 
-                # Format announcement date
-                from datetime import datetime
+                # Get the next upcoming announcement date if not provided
                 formatted_announcement_date = 'soon'
                 if announcement_date:
                     if isinstance(announcement_date, str):
                         try:
-                            # Try parsing different date formats
-                            try:
-                                dt = datetime.strptime(announcement_date, '%Y-%m-%d %H:%M:%S')
-                            except:
-                                dt = datetime.strptime(announcement_date, '%Y-%m-%d')
-                            formatted_announcement_date = dt.strftime('%B %d, %Y')
+                            announcement_date = datetime.strptime(announcement_date, '%Y-%m-%d %H:%M:%S')
                         except:
-                            formatted_announcement_date = announcement_date
-                    elif isinstance(announcement_date, datetime):
-                        formatted_announcement_date = announcement_date.strftime('%B %d, %Y')
+                            try:
+                                announcement_date = datetime.strptime(announcement_date, '%Y-%m-%d')
+                            except:
+                                pass
+                    if isinstance(announcement_date, datetime):
+                        formatted_announcement_date = announcement_date.strftime("%B %d, %Y")
+                else:
+                    # Try to get the next upcoming announcement
+                    try:
+                        upcoming_announcement = Announcement.query.filter(
+                            Announcement.announcement_date >= datetime.utcnow()
+                        ).order_by(Announcement.announcement_date.asc()).first()
+                        if upcoming_announcement:
+                            formatted_announcement_date = upcoming_announcement.announcement_date.strftime("%B %d, %Y")
+                    except Exception as e:
+                        logger.warning(f"[EMAILJS] Could not fetch announcement date: {str(e)}")
                 
                 html_content = render_template(
                     'emails/welcome_email.html',
                     first_name=first_name or name,
                     name=name,
-                    announcement_date=announcement_date or 'soon',
                     formatted_announcement_date=formatted_announcement_date,
                     domain_name=domain_name
                 )
@@ -247,7 +256,7 @@ class EmailJSService:
                 'to_name': name,
                 'first_name': first_name or name,
                 'name': name,
-                'announcement_date': announcement_date or 'soon'
+                'announcement_date': formatted_announcement_date
             }
             
             logger.info(f"[EMAILJS] Calling _send_email with template_id: {template_id}")
