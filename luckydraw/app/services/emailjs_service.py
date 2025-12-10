@@ -456,6 +456,8 @@ class EmailJSService:
         Uses announcement_reminder.html template from codebase
         """
         try:
+            from datetime import datetime, timedelta
+            
             # Use generic template ID (can be same for all emails)
             template_id = current_app.config.get('EMAILJS_TEMPLATE_GENERIC') or current_app.config.get('EMAILJS_TEMPLATE_ANNOUNCEMENT')
             
@@ -468,12 +470,57 @@ class EmailJSService:
             # Extract first name from full name
             first_name = name.split()[0] if name else name
             
+            # Calculate time difference and format dates dynamically
+            now = datetime.utcnow()
+            if isinstance(announcement_date, str):
+                # Parse string date if needed
+                try:
+                    announcement_date = datetime.strptime(announcement_date, '%Y-%m-%d %H:%M:%S')
+                except:
+                    announcement_date = datetime.strptime(announcement_date, '%Y-%m-%d')
+            
+            time_diff = announcement_date - now
+            hours_remaining = int(time_diff.total_seconds() / 3600)
+            days_remaining = time_diff.days
+            
+            # Format time remaining text
+            if hours_remaining < 24:
+                time_remaining_text = f"{hours_remaining} Hours Left"
+            elif days_remaining == 1:
+                time_remaining_text = "24 Hours Left"
+            elif days_remaining < 7:
+                time_remaining_text = f"{days_remaining} Days Left"
+            else:
+                time_remaining_text = f"{days_remaining} Days Left"
+            
+            # Format announcement date for display
+            if days_remaining == 1:
+                date_display = "Tomorrow"
+                date_display_lower = "tomorrow"
+            elif days_remaining == 0:
+                date_display = "Today"
+                date_display_lower = "today"
+            else:
+                # Format as "December 25" or "December 25, 2025"
+                date_display = announcement_date.strftime("%B %d")
+                if announcement_date.year != now.year:
+                    date_display += f", {announcement_date.year}"
+                date_display_lower = date_display.lower()
+            
+            # Format full date for subject/header
+            formatted_date = announcement_date.strftime("%B %d, %Y")
+            
             # Render HTML template from codebase
             html_content = render_template(
                 'emails/announcement_reminder.html',
                 first_name=first_name,
                 name=name,
-                domain_name=domain_name
+                domain_name=domain_name,
+                announcement_date=announcement_date,
+                date_display=date_display,
+                date_display_lower=date_display_lower,
+                time_remaining_text=time_remaining_text,
+                formatted_date=formatted_date
             )
             
             template_params = {
@@ -486,15 +533,19 @@ class EmailJSService:
                 'share_url': share_url
             }
             
+            subject = f'🔔 {time_remaining_text}: Prize Announcement Incoming'
+            
             return EmailJSService._send_email(
                 template_id, 
                 template_params, 
                 html_content, 
-                '🔔 24 Hours Left: Prize Announcement Incoming'
+                subject
             )
             
         except Exception as e:
             logger.error(f"[EMAILJS] Exception in send_announcement_reminder: {str(e)}")
+            import traceback
+            logger.error(f"[EMAILJS] Traceback: {traceback.format_exc()}")
             return False
     
     @staticmethod

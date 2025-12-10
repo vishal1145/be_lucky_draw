@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>24 Hours Left: Prize Announcement Incoming</title>
+    <title>{{ time_remaining_text }}: Prize Announcement Incoming</title>
 </head>
 
 <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
@@ -20,7 +20,7 @@
         <tr>
             <td style="padding: 25px; text-align: center;">
                 <!-- Title Section -->
-                <h2 style="margin: 0; font-size: 24px; color: #2d2fcb;">🔔 24 Hours Left</h2>
+                <h2 style="margin: 0; font-size: 24px; color: #2d2fcb;">🔔 {{ time_remaining_text }}</h2>
                 <p style="margin: 5px 0 0; color: #555; font-size: 14px;">
                     Prize Announcement Incoming
                 </p>
@@ -36,16 +36,16 @@
                 </p>
 
                 <p style="margin: 0 0 15px 0;">
-                    Tomorrow, we will announce the recipients of the <strong>$1,100</strong>, <strong>$500</strong>, and <strong>$250</strong> Service Credits.
+                    {{ date_display }}, we will announce the recipients of the <strong>$1,100</strong>, <strong>$500</strong>, and <strong>$250</strong> Service Credits.
                 </p>
 
                 <h3 style="font-size: 16px; margin-top: 20px; margin-bottom: 15px; color: #000;">Action Required:</h3>
 
                 <p style="margin: 0 0 15px 0; padding: 0;">
-                    Keep an eye on your inbox tomorrow. You will receive a unique link to check your status and claim your <strong>Guaranteed $99 Credit</strong>.
+                    Keep an eye on your inbox {{ date_display_lower }}. You will receive a unique link to check your status and claim your <strong>Guaranteed $99 Credit</strong>.
                 </p>
 
-                <p style="margin: 15px 0 5px 0;">See you tomorrow,</p>
+                <p style="margin: 15px 0 5px 0;">See you {{ date_display_lower }},</p>
                 <p style="margin: 0; font-weight: bold;">The AlgoFolks Team</p>
             </td>
         </tr>
