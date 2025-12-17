@@ -32,7 +32,7 @@ class RegistrationController:
             }
 
             # Validate required fields
-            required_fields = ['name', 'email', 'country_code', 'phone', 'technologies', 'requirements']
+            required_fields = ['name', 'email', 'country_code', 'requirements']
             for field in required_fields:
                 if not form_data.get(field):
                     return jsonify({'error': f'Missing required field: {field}'}), 400
@@ -48,16 +48,17 @@ class RegistrationController:
                 logger.error(f"[REGISTRATION] Database error checking email: {str(db_error)}")
                 raise
 
-            # Check for existing phone number
-            try:
-                existing_phone = Registration.query.filter_by(mobile_number=form_data['phone']).first()
-                if existing_phone:
-                    return jsonify({
-                        'error': 'Phone number already registered'
-                    }), 200
-            except Exception as db_error:
-                logger.error(f"[REGISTRATION] Database error checking phone: {str(db_error)}")
-                raise
+            # Check for existing phone number (only if phone is provided)
+            if form_data.get('phone'):
+                try:
+                    existing_phone = Registration.query.filter_by(mobile_number=form_data['phone']).first()
+                    if existing_phone:
+                        return jsonify({
+                            'error': 'Phone number already registered'
+                        }), 200
+                except Exception as db_error:
+                    logger.error(f"[REGISTRATION] Database error checking phone: {str(db_error)}")
+                    raise
 
             # Handle image upload
             image = request.files.get('image')
@@ -322,10 +323,12 @@ class RegistrationController:
                     name=winner.name
                 )
                 
-                SMSService.send_winner_sms(
-                    phone_number=f"{winner.country_code}{winner.mobile_number}",
-                    name=winner.name
-                )
+                # Send SMS only if mobile_number is provided
+                if winner.mobile_number and winner.country_code:
+                    SMSService.send_winner_sms(
+                        phone_number=f"{winner.country_code}{winner.mobile_number}",
+                        name=winner.name
+                    )
                 
                 response_data.append({
                     "position": index,  
